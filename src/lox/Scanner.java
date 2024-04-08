@@ -1,11 +1,34 @@
 package lox;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static lox.TokenType.*;
 
 public class Scanner {
+	
+	private static final Map<String, TokenType> keywords;
+	static {
+		keywords = new HashMap<String, TokenType>();
+		keywords.put("and", AND);
+		keywords.put("class", CLASS);
+		keywords.put("else", ELSE);
+		keywords.put("false", FALSE);
+		keywords.put("for", FOR);
+		keywords.put("fun", FUNCTION);
+		keywords.put("if", IF);
+		keywords.put("nil", NIL);
+		keywords.put("or", OR);
+		keywords.put("print", PRINT);
+		keywords.put("return", RETURN);
+		keywords.put("super", SUPER);
+		keywords.put("this", THIS);
+		keywords.put("true", TRUE);
+		keywords.put("var", VAR);
+		keywords.put("while", WHILE);
+	}
 	
 	private final String source;
 	private final List<Token> tokens = new ArrayList<Token>();
@@ -97,6 +120,9 @@ public class Scanner {
 				// numbers
 				if(isDigit(c)) number();
 				
+				// identifiers
+				else if(isAlpha(c)) identifier();
+				
 				// errors
 				else Lox.error(line, "Unexpected character: '" + c + "'.");
 				break;
@@ -106,6 +132,15 @@ public class Scanner {
 	
 	private boolean isDigit(char c) {
 		return '0' <= c && c <= '9';
+	}
+	private boolean isAlpha(char c) {
+		if('a' <= c && c <= 'z') return true;
+		if('A' <= c && c <= 'Z') return true;
+		if(c == '_')             return true;
+		return false;
+	}
+	private boolean isAlphaNumeric(char c) {
+		return (isDigit(c) || isAlpha(c));
 	}
 	
 	private void string() {
@@ -122,6 +157,15 @@ public class Scanner {
 		advance();
 		String value = source.substring(start+1, current-1);
 		addToken(STRING, value);
+	}
+	private void identifier() {
+		while(isAlphaNumeric(peek())) advance();
+		
+		String text = source.substring(start, current);
+		TokenType type = keywords.get(text);
+		if(type == null) type = IDENTIFIER;
+		addToken(type);
+		
 	}
 	
 	private void number() {

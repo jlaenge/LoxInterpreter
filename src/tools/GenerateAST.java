@@ -33,14 +33,18 @@ public class GenerateAST {
 		
 		writer.println("package lox;");
 		writer.println();
-		writer.println("import java.util.List;");
-		writer.println();
 		
 		// CLASS: open
 		writer.println("public abstract class " + baseName + " {");
 		writer.println();
 		writer.indent();
 		
+		// visitor pattern
+		defineVisitor(writer, baseName, types);
+		writer.println("abstract <T> T accept(Visitor<T> visitor);");
+		writer.println();
+		
+		// sub-classes
 		for(String type : types) {
 			String className = type.split(":")[0].trim();
 			String fields = type.split(":")[1].trim();
@@ -52,6 +56,30 @@ public class GenerateAST {
 		writer.println("}");
 		
 		writer.flush();
+		
+	}
+	
+	private static void defineVisitor(PrettyPrintWriter writer, String baseName, List<String> types) {
+		
+		// INTERFACE: open
+		writer.println("interface Visitor<T> {");
+		writer.indent();
+		
+		// visit-methods
+		for(String type : types) {
+			type = type.trim();
+			String className = type.split(":")[0].trim();
+			writer.println(
+				"public T visit" + baseName + className + "(" +
+					className + " " + baseName.toLowerCase() + 
+				");"
+			);
+		}
+		
+		// INTERFACE: close
+		writer.outdent();
+		writer.println("}");
+		writer.println();
 		
 	}
 	
@@ -80,6 +108,16 @@ public class GenerateAST {
 		}
 		
 		// CONSTRUCTOR: close
+		writer.outdent();
+		writer.println("}");
+		
+		// VISITOR: open
+		writer.println("<T> T accept(Visitor<T> visitor) {");
+		writer.indent();
+		
+		writer.println("return visitor.visit" + baseName + className + "(this);");
+		
+		// VISITOR: close
 		writer.outdent();
 		writer.println("}");
 		

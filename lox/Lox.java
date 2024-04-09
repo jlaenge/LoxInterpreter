@@ -56,10 +56,10 @@ public class Lox {
 		
 		Parser parser = new Parser(tokens);
 		Expr expression = parser.parse();
-		
 		if(hadError) return;
 		
-		System.out.println(new ASTPrinter().print(expression));
+		Interpreter interpreter = new Interpreter();
+		interpreter.interpret(expression);
 		
 	}
 	
@@ -72,6 +72,10 @@ public class Lox {
 		} else {
 			report(token.line, " at '" + token.lexeme + "'", message);
 		}
+	}
+	
+	public static void runtimeError(RuntimeError err) {
+		
 	}
 	
 	private static void report(int line, String where, String message) {

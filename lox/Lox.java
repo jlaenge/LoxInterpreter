@@ -10,7 +10,10 @@ import java.util.List;
 
 public class Lox {
 	
+	private static Interpreter interpreter = new Interpreter();
+	
 	private static boolean hadError = false;
+	private static boolean hadRuntimeError = false;
 
 	public static void main(String[] args) throws IOException {
 		
@@ -31,6 +34,7 @@ public class Lox {
 		
 		// Indicate an error in the exit code.
 		if(hadError) System.exit(65);
+		if(hadRuntimeError) System.exit(70);
 	}
 	
 	private static void runPrompt() throws IOException {
@@ -58,7 +62,6 @@ public class Lox {
 		Expr expression = parser.parse();
 		if(hadError) return;
 		
-		Interpreter interpreter = new Interpreter();
 		interpreter.interpret(expression);
 		
 	}
@@ -75,7 +78,10 @@ public class Lox {
 	}
 	
 	public static void runtimeError(RuntimeError err) {
-		
+		System.err.println(
+			err.getMessage() + "\n[line " + err.token.line + "]"
+		);
+		hadRuntimeError = true;
 	}
 	
 	private static void report(int line, String where, String message) {

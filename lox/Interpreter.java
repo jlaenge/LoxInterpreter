@@ -2,14 +2,12 @@ package lox;
 
 import java.util.List;
 
-import lox.Expr.Binary;
-import lox.Expr.Grouping;
-import lox.Expr.Literal;
-import lox.Expr.Unary;
-import lox.Stmt.Expression;
-import lox.Stmt.Print;
+import lox.Expr.*;
+import lox.Stmt.*;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
+	
+	private Environment environment = new Environment();
 	
 	public void interpret(List<Stmt> statements) {
 		try {
@@ -31,6 +29,18 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	public Void visitStmtPrint(Print stmt) {
 		Object value = evaluate(stmt.expression);
 		System.out.println(stringify(value));
+		return null;
+	}
+	
+	@Override
+	public Void visitStmtVar(Var stmt) {
+		
+		Object value = null;
+		if(stmt.initializer != null) {
+			value = evaluate(stmt.initializer);
+		}
+		
+		environment.define(stmt.name.lexeme, value);
 		return null;
 	}
 	
@@ -104,6 +114,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 				break;
 		}
 		return null;
+	}
+	
+
+	@Override
+	public Object visitExprVariable(Variable expr) {
+		return environment.get(expr.name);
 	}
 	
 	private void checkNumberOperand(Token operator, Object operand) {

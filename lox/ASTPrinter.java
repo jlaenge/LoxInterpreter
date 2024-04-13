@@ -4,17 +4,17 @@ import lox.Expr.Binary;
 import lox.Expr.Grouping;
 import lox.Expr.Literal;
 import lox.Expr.Unary;
+import lox.Expr.Variable;
 
 public class ASTPrinter implements Expr.Visitor<String> {
 	
 	public static void main(String[] args) {
 		
-		
 		// -123 * (45.67)
 		Expr expression = new Expr.Binary(
 			new Expr.Unary(
 				new Token(TokenType.MINUS, "-", null, 1),
-				new Expr.Literal(123)
+				new Expr.Variable(new Token(TokenType.IDENTIFIER, "tmp", null, 1))
 			),
 			new Token(TokenType.STAR, "*", null, 1),
 			new Expr.Grouping(
@@ -62,6 +62,11 @@ public class ASTPrinter implements Expr.Visitor<String> {
 		builder.append(")");
 		
 		return builder.toString();
+	}
+
+	@Override
+	public String visitExprVariable(Variable expr) {
+		return expr.name.lexeme;
 	}
 
 }

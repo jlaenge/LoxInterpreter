@@ -7,6 +7,7 @@ public abstract class Expr {
         public T visitExprGrouping(Grouping expr);
         public T visitExprLiteral(Literal expr);
         public T visitExprUnary(Unary expr);
+        public T visitExprVariable(Variable expr);
     }
 
     abstract <T> T accept(Visitor<T> visitor);
@@ -54,6 +55,16 @@ public abstract class Expr {
         }
         <T> T accept(Visitor<T> visitor) {
             return visitor.visitExprUnary(this);
+        }
+    }
+
+    static class Variable extends Expr {
+        Token name;
+        Variable(Token name) {
+            this.name = name;
+        }
+        <T> T accept(Visitor<T> visitor) {
+            return visitor.visitExprVariable(this);
         }
     }
 

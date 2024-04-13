@@ -21,9 +21,34 @@ public class Parser {
 	public List<Stmt> parse() {
 		List<Stmt> statements = new ArrayList<Stmt>();
 		while(!isAtEnd()) {
-			statements.add(statement());
+			statements.add(declaration());
 		}
 		return statements;
+	}
+	
+	private Stmt declaration() {
+		try {
+			if(match(VAR)) {
+				return varDeclaration();
+			} else {
+				return statement();
+			}
+		} catch(ParseError err) {
+			synchronize();
+			return null;
+		}
+	}
+	
+	private Stmt varDeclaration() {
+		Token name = consume(IDENTIFIER, "Expected name variable.");
+		
+		Expr initializer = null;
+		if(match(EQUAL)) {
+			initializer = expression();
+		}
+		
+		consume(SEMICOLON, "Expected ';' after variable declaration.");
+		return new Stmt.Var(name, initializer);
 	}
 	
 	private Stmt statement() {
@@ -118,6 +143,10 @@ public class Parser {
 			return new Expr.Literal(previous().literal);
 		}
 		
+		if(match(IDENTIFIER)) {
+			return new Expr.Variable(previous());
+		}
+		
 		if(match(LEFT_PARENTHESIS)) {
 			Expr expr = expression();
 			consume(RIGHT_PARENTHESIS, "Expected ')' after expression.");
@@ -132,7 +161,6 @@ public class Parser {
 		return new ParseError();
 	}
 	
-	@SuppressWarnings("unused")
 	private void synchronize() {
 		advance();
 		
@@ -165,9 +193,9 @@ public class Parser {
 		return false;
 	}
 	
-	private void consume(TokenType type, String message) {
+	private Token consume(TokenType type, String message) {
 		if(check(type)) {
-			advance();
+			return advance();
 		} else {
 			throw error(peek(), message);
 		}

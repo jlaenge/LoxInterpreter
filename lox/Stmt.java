@@ -13,9 +13,9 @@ public abstract class Stmt {
 
     abstract <T> T accept(Visitor<T> visitor);
 
-    static class Block extends Stmt {
-        List<Stmt> statements;
-        Block(List<Stmt> statements) {
+    public static class Block extends Stmt {
+        public List<Stmt> statements;
+        public Block(List<Stmt> statements) {
             this.statements = statements;
         }
         <T> T accept(Visitor<T> visitor) {
@@ -23,9 +23,9 @@ public abstract class Stmt {
         }
     }
 
-    static class Expression extends Stmt {
-        Expr expression;
-        Expression(Expr expression) {
+    public static class Expression extends Stmt {
+        public Expr expression;
+        public Expression(Expr expression) {
             this.expression = expression;
         }
         <T> T accept(Visitor<T> visitor) {
@@ -33,9 +33,9 @@ public abstract class Stmt {
         }
     }
 
-    static class Print extends Stmt {
-        Expr expression;
-        Print(Expr expression) {
+    public static class Print extends Stmt {
+        public Expr expression;
+        public Print(Expr expression) {
             this.expression = expression;
         }
         <T> T accept(Visitor<T> visitor) {
@@ -43,10 +43,10 @@ public abstract class Stmt {
         }
     }
 
-    static class Var extends Stmt {
-        Token name;
-        Expr initializer;
-        Var(Token name, Expr initializer) {
+    public static class Var extends Stmt {
+        public Token name;
+        public Expr initializer;
+        public Var(Token name, Expr initializer) {
             this.name = name;
             this.initializer = initializer;
         }

@@ -1,5 +1,7 @@
 package lox;
 
+import java.util.List;
+
 public abstract class Expr {
 
     interface Visitor<T> {
@@ -13,10 +15,10 @@ public abstract class Expr {
 
     abstract <T> T accept(Visitor<T> visitor);
 
-    static class Assign extends Expr {
-        Token name;
-        Expr expression;
-        Assign(Token name, Expr expression) {
+    public static class Assign extends Expr {
+        public Token name;
+        public Expr expression;
+        public Assign(Token name, Expr expression) {
             this.name = name;
             this.expression = expression;
         }
@@ -25,11 +27,11 @@ public abstract class Expr {
         }
     }
 
-    static class Binary extends Expr {
-        Expr left;
-        Token operator;
-        Expr right;
-        Binary(Expr left, Token operator, Expr right) {
+    public static class Binary extends Expr {
+        public Expr left;
+        public Token operator;
+        public Expr right;
+        public Binary(Expr left, Token operator, Expr right) {
             this.left = left;
             this.operator = operator;
             this.right = right;
@@ -39,9 +41,9 @@ public abstract class Expr {
         }
     }
 
-    static class Grouping extends Expr {
-        Expr expression;
-        Grouping(Expr expression) {
+    public static class Grouping extends Expr {
+        public Expr expression;
+        public Grouping(Expr expression) {
             this.expression = expression;
         }
         <T> T accept(Visitor<T> visitor) {
@@ -49,9 +51,9 @@ public abstract class Expr {
         }
     }
 
-    static class Literal extends Expr {
-        Object value;
-        Literal(Object value) {
+    public static class Literal extends Expr {
+        public Object value;
+        public Literal(Object value) {
             this.value = value;
         }
         <T> T accept(Visitor<T> visitor) {
@@ -59,10 +61,10 @@ public abstract class Expr {
         }
     }
 
-    static class Unary extends Expr {
-        Token operator;
-        Expr right;
-        Unary(Token operator, Expr right) {
+    public static class Unary extends Expr {
+        public Token operator;
+        public Expr right;
+        public Unary(Token operator, Expr right) {
             this.operator = operator;
             this.right = right;
         }
@@ -71,9 +73,9 @@ public abstract class Expr {
         }
     }
 
-    static class Variable extends Expr {
-        Token name;
-        Variable(Token name) {
+    public static class Variable extends Expr {
+        public Token name;
+        public Variable(Token name) {
             this.name = name;
         }
         <T> T accept(Visitor<T> visitor) {

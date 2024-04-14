@@ -8,6 +8,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
+import lox.parse.ParseError;
+import lox.parse.Parser;
+
 public class Lox {
 	
 	private static Interpreter interpreter = new Interpreter();
@@ -41,15 +44,44 @@ public class Lox {
 		InputStreamReader input = new InputStreamReader(System.in);
 		BufferedReader reader = new BufferedReader(input);
 		
+		String source = "";
 		while(true) {
-			System.out.print("> ");
-			String line = reader.readLine();
-			if(line != null) {
-				run(line);
-				hadError = false;
+	
+			if(source.isEmpty()) {
+				System.out.print("> ");
 			} else {
-				break;
+				System.out.print("\t");
 			}
+			
+			String line = reader.readLine();
+			if(line == null) break;
+			
+			source += line;
+			Scanner scanner = new Scanner(source);
+			List<Token> tokens = scanner.scanTokens();
+			
+			Parser parser = new Parser(tokens);
+			ParseError parseError = null;
+			try {
+				parser.tryParse();
+			} catch(ParseError err) {
+				parseError = err;
+			}
+			
+			if(parseError == null) {
+				run(source);
+				source = "";
+			} else {
+				switch(parseError.type) {
+					case INCOMPLETE_PROGRAM:
+						break;
+					default:
+						Lox.error(parseError.token, parseError.message);
+						source = "";
+				}
+			}
+			hadError = false;
+	
 		}
 	}
 	

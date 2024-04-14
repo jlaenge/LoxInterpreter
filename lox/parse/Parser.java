@@ -1,21 +1,30 @@
-package lox;
+package lox.parse;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import lox.Expr;
+import lox.Stmt;
+import lox.Token;
+import lox.TokenType;
+
 import static lox.TokenType.*;
 
 public class Parser {
-	
-	public static class ParseError extends RuntimeException {
-		private static final long serialVersionUID = 1L;
-	}
 
 	private final List<Token> tokens;
 	private int current = 0;
 	
+	private ParseErrorHandler errorHandler;
+	
 	public Parser(List<Token> tokens) {
 		this.tokens = tokens;
+		this.errorHandler = ParseErrorHandler.get(ParseErrorHandler.Type.SYNCHRONIZE);
+	}
+
+	public List<Stmt> tryParse() {
+		errorHandler = ParseErrorHandler.get(ParseErrorHandler.Type.THROW);
+		return parse();
 	}
 	
 	public List<Stmt> parse() {
@@ -34,7 +43,7 @@ public class Parser {
 				return statement();
 			}
 		} catch(ParseError err) {
-			synchronize();
+			errorHandler.handleError(this, err);
 			return null;
 		}
 	}
@@ -188,11 +197,14 @@ public class Parser {
 	}
 	
 	private ParseError error(Token token, String message) {
-		Lox.error(token, message);
-		return new ParseError();
+		ParseErrorType type = ParseErrorType.GENERAL;
+		if(isAtEnd()) {
+			type = ParseErrorType.INCOMPLETE_PROGRAM;
+		}
+		return new ParseError(type, token, message);
 	}
 	
-	private void synchronize() {
+	public void synchronize() {
 		advance();
 		
 		while(!isAtEnd()) {

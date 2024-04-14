@@ -42,6 +42,8 @@ public class GenerateAST {
 		
 		writer.println("package lox;");
 		writer.println();
+		writer.println("import java.util.List;");
+		writer.println();
 		
 		// CLASS: open
 		writer.println("public abstract class " + baseName + " {");
@@ -97,17 +99,17 @@ public class GenerateAST {
 		String[] fields = fieldsString.split(",");
 		
 		// CLASS: open
-		writer.println("static class " + className + " extends " + baseName + " {");
+		writer.println("public static class " + className + " extends " + baseName + " {");
 		writer.indent();
 		
 		// ATTRIBUTES
 		for(String field : fields) {
 			field = field.trim();
-			writer.println(field + ";");
+			writer.println("public " + field + ";");
 		}
 		
 		// CONSTRUCTOR: open
-		writer.println(className + "(" + fieldsString + ") {");
+		writer.println("public " + className + "(" + fieldsString + ") {");
 		writer.indent();
 		
 		for(String field : fields) {

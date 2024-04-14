@@ -3,6 +3,7 @@ package lox;
 public abstract class Expr {
 
     interface Visitor<T> {
+        public T visitExprAssign(Assign expr);
         public T visitExprBinary(Binary expr);
         public T visitExprGrouping(Grouping expr);
         public T visitExprLiteral(Literal expr);
@@ -11,6 +12,18 @@ public abstract class Expr {
     }
 
     abstract <T> T accept(Visitor<T> visitor);
+
+    static class Assign extends Expr {
+        Token name;
+        Expr expression;
+        Assign(Token name, Expr expression) {
+            this.name = name;
+            this.expression = expression;
+        }
+        <T> T accept(Visitor<T> visitor) {
+            return visitor.visitExprAssign(this);
+        }
+    }
 
     static class Binary extends Expr {
         Expr left;

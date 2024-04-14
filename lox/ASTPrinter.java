@@ -1,5 +1,6 @@
 package lox;
 
+import lox.Expr.Assign;
 import lox.Expr.Binary;
 import lox.Expr.Grouping;
 import lox.Expr.Literal;
@@ -29,6 +30,11 @@ public class ASTPrinter implements Expr.Visitor<String> {
 		return expr.accept(this);
 	}
 
+	@Override
+	public String visitExprAssign(Assign expr) {
+		return parenthesize(expr.name.lexeme, expr.expression);
+	}
+	
 	@Override
 	public String visitExprBinary(Binary expr) {
 		return parenthesize(expr.operator.lexeme, expr.left, expr.right);

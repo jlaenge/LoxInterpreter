@@ -18,6 +18,14 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 			Lox.runtimeError(err);
 		}
 	}
+
+
+	@Override
+	public Void visitStmtBlock(Block stmt) {
+		executeBlock(stmt.statements, new Environment(environment));
+		return null;
+	}
+
 	
 	@Override
 	public Void visitStmtExpression(Expression stmt) {
@@ -172,6 +180,18 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	
 	private void execute(Stmt stmt) {
 		stmt.accept(this);
+	}
+	private void executeBlock(List<Stmt> statements, Environment environment) {
+		Environment previous = this.environment;
+		
+		try {
+			this.environment = environment;
+			for(Stmt statement : statements) {
+				execute(statement);
+			}
+		} finally {
+			this.environment = previous;
+		}
 	}
 	
 	private Object evaluate(Expr expr) {

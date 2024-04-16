@@ -61,6 +61,8 @@ public class Parser {
 	private Stmt statement() {
 		if(match(LEFT_BRACE)) {
 			return blockStatement();
+		} else if(match(IF)) {
+			return ifStatement();
 		} else if(match(PRINT)) {
 			return printStatement();
 		}
@@ -76,6 +78,20 @@ public class Parser {
 		
 		consume(RIGHT_BRACE, "Expected '}' after block.");
 		return new Stmt.Block(statements);
+	}
+	
+	private Stmt ifStatement() {
+		consume(LEFT_PARENTHESIS, "Expected '(' after 'if'.");
+		Expr condition = expression();
+		consume(RIGHT_PARENTHESIS, "Expected')' after condition.");
+		
+		Stmt thenBranch = statement();
+		Stmt elseBranch = null;
+		if(match(ELSE)) {
+			elseBranch = statement();
+		}
+		
+		return new Stmt.If(condition, thenBranch, elseBranch);
 	}
 	
 	private Stmt printStatement() {

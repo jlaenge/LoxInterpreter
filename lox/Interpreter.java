@@ -126,6 +126,23 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	public Object visitExprLiteral(Literal expr) {
 		return expr.value;
 	}
+	
+	@Override
+	public Object visitExprLogical(Logical expr) {
+		Object left = evaluate(expr.left);
+		switch(expr.operator.type) {
+			case AND: 
+				if(!isTruthy(left)) return left;
+				break;
+			case OR:
+				if(isTruthy(left)) return left;
+				break;
+			default:
+				assert(false);
+		}
+		return evaluate(expr.right);
+	}
+
 
 	@Override
 	public Object visitExprUnary(Unary expr) {

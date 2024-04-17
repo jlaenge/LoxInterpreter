@@ -10,6 +10,7 @@ public abstract class Stmt {
         public T visitStmtIf(If stmt);
         public T visitStmtPrint(Print stmt);
         public T visitStmtVar(Var stmt);
+        public T visitStmtWhile(While stmt);
     }
 
     abstract <T> T accept(Visitor<T> visitor);
@@ -67,6 +68,18 @@ public abstract class Stmt {
         }
         <T> T accept(Visitor<T> visitor) {
             return visitor.visitStmtVar(this);
+        }
+    }
+
+    public static class While extends Stmt {
+        public Expr condition;
+        public Stmt body;
+        public While(Expr condition, Stmt body) {
+            this.condition = condition;
+            this.body = body;
+        }
+        <T> T accept(Visitor<T> visitor) {
+            return visitor.visitStmtWhile(this);
         }
     }
 

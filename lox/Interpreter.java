@@ -44,6 +44,14 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	}
 
 	@Override
+	public Void visitStmtWhile(While stmt) {
+		while(isTruthy(evaluate(stmt.condition))) {
+			execute(stmt.body);
+		}
+		return null;
+	}
+	
+	@Override
 	public Void visitStmtPrint(Print stmt) {
 		Object value = evaluate(stmt.expression);
 		System.out.println(stringify(value));

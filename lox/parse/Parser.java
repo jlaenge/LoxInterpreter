@@ -1,6 +1,7 @@
 package lox.parse;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import lox.Expr;
@@ -61,8 +62,12 @@ public class Parser {
 	private Stmt statement() {
 		if(match(LEFT_BRACE)) {
 			return blockStatement();
+		} else if(match(FOR)) {
+			return forStatement();
 		} else if(match(IF)) {
 			return ifStatement();
+		} else if(match(WHILE)) {
+			return whileStatement();
 		} else if(match(PRINT)) {
 			return printStatement();
 		}
@@ -80,6 +85,50 @@ public class Parser {
 		return new Stmt.Block(statements);
 	}
 	
+	private Stmt forStatement() {
+		consume(LEFT_PARENTHESIS, "Expected '(' after 'for'.");
+		
+		Stmt initializer = null;
+		if(!match(SEMICOLON)) {
+			if(match(VAR)) {
+				initializer = varDeclaration();
+			} else {
+				initializer = expressionStatement();
+			}
+		}
+		
+		Expr condition = new Expr.Literal(true);
+		if(!check(SEMICOLON)) {
+			condition = expression();
+		}
+		consume(SEMICOLON, "Expected ';' after loop condition.");
+		
+		Expr increment = null;
+		if(!check(RIGHT_PARENTHESIS)) {
+			increment = expression();
+		}
+		consume(RIGHT_PARENTHESIS, "Expected ')' after for clauses.");
+		
+		Stmt body = statement();
+		
+		if(increment != null) {
+			body = new Stmt.Block(Arrays.asList(
+				body,
+				new Stmt.Expression(increment)
+			));
+		}
+		body = new Stmt.While(condition, body);
+		if(initializer != null) {
+			body = new Stmt.Block(Arrays.asList(
+				initializer,
+				body
+			));
+		}
+		
+		return body;
+		
+	}
+	
 	private Stmt ifStatement() {
 		consume(LEFT_PARENTHESIS, "Expected '(' after 'if'.");
 		Expr condition = expression();
@@ -92,6 +141,15 @@ public class Parser {
 		}
 		
 		return new Stmt.If(condition, thenBranch, elseBranch);
+	}
+	
+	private Stmt whileStatement() {
+		consume(LEFT_PARENTHESIS, "Expected '(' after 'while'.");
+		Expr condition = expression();
+		consume(RIGHT_PARENTHESIS, "Expected ')' after 'condition'.");
+		
+		Stmt body = statement();
+		return new Stmt.While(condition, body);
 	}
 	
 	private Stmt printStatement() {

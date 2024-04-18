@@ -1,6 +1,8 @@
-package lox;
+package lox.callable;
 
 import java.util.List;
+
+import lox.Interpreter;
 
 public interface LoxCallable {
 

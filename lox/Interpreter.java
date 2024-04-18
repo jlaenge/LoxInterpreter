@@ -5,10 +5,12 @@ import java.util.List;
 
 import lox.Expr.*;
 import lox.Stmt.*;
+import lox.callable.LoxCallable;
+import lox.callable.LoxFunction;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	
-	private final Environment globals = new Environment();
+	public final Environment globals = new Environment();
 	
 	private Environment environment = globals;
 	
@@ -79,6 +81,13 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	public Void visitStmtPrint(Print stmt) {
 		Object value = evaluate(stmt.expression);
 		System.out.println(stringify(value));
+		return null;
+	}
+	
+	@Override
+	public Void visitStmtFunction(Function stmt) {
+		LoxFunction function = new LoxFunction(stmt);
+		environment.define(stmt.name.lexeme, function);
 		return null;
 	}
 	
@@ -265,7 +274,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	private void execute(Stmt stmt) {
 		stmt.accept(this);
 	}
-	private void executeBlock(List<Stmt> statements, Environment environment) {
+	public void executeBlock(List<Stmt> statements, Environment environment) {
 		Environment previous = this.environment;
 		
 		try {

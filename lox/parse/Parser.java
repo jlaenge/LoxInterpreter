@@ -38,7 +38,9 @@ public class Parser {
 	
 	private Stmt declaration() {
 		try {
-			if(match(VAR)) {
+			if(match(FUNCTION)) {
+				return funDeclaration("function");
+			} else if(match(VAR)) {
 				return varDeclaration();
 			} else {
 				return statement();
@@ -47,6 +49,28 @@ public class Parser {
 			errorHandler.handleError(this, err);
 			return null;
 		}
+	}
+	
+	private Stmt funDeclaration(String kind) {
+		Token name = consume(IDENTIFIER, "Expected " + kind + " name.");
+		
+		List<Token> parameters = new ArrayList<Token>();
+		consume(LEFT_PARENTHESIS, "Expected '(' after " + kind + " name.");
+		if(!check(RIGHT_PARENTHESIS)) {
+			if(parameters.size() >= 255) {
+				error(peek(), "Exceeded parameter limit of '255'.");
+			}
+			do {
+				Token parameter = consume(IDENTIFIER, "Expected parameter name.");
+				parameters.add(parameter);
+			} while(match(COMMA));
+		}
+		consume(RIGHT_PARENTHESIS, "Expected ')' after parameters.");
+		
+		consume(LEFT_BRACE, "Expected '{' before " + kind + " body.");
+		List<Stmt> body = block();
+		
+		return new Stmt.Function(name, parameters, body);
 	}
 	
 	private Stmt varDeclaration() {
@@ -75,6 +99,10 @@ public class Parser {
 	}
 	
 	private Stmt blockStatement() {
+		return new Stmt.Block(block());
+	}
+	
+	private List<Stmt> block() {
 		List<Stmt> statements = new ArrayList<Stmt>();
 		
 		while(!check(RIGHT_BRACE) && !isAtEnd()) {
@@ -82,7 +110,7 @@ public class Parser {
 		}
 		
 		consume(RIGHT_BRACE, "Expected '}' after block.");
-		return new Stmt.Block(statements);
+		return statements;
 	}
 	
 	private Stmt forStatement() {
@@ -290,7 +318,7 @@ public class Parser {
 				}
 				Expr argument = expression();
 				arguments.add(argument);
-			} while(!match(COMMA));
+			} while(match(COMMA));
 		}
 		
 		Token paren = consume(RIGHT_PARENTHESIS, "Expected ')' after arguments.");

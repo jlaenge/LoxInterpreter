@@ -1,7 +1,11 @@
 package lox;
 
+import java.util.Arrays;
+import java.util.List;
+
 import lox.Expr.Assign;
 import lox.Expr.Binary;
+import lox.Expr.Call;
 import lox.Expr.Grouping;
 import lox.Expr.Literal;
 import lox.Expr.Logical;
@@ -33,17 +37,23 @@ public class ASTPrinter implements Expr.Visitor<String> {
 
 	@Override
 	public String visitExprAssign(Assign expr) {
-		return parenthesize(expr.name.lexeme, expr.expression);
+		return parenthesize(expr.name.lexeme, Arrays.asList(expr.expression));
 	}
 	
 	@Override
 	public String visitExprBinary(Binary expr) {
-		return parenthesize(expr.operator.lexeme, expr.left, expr.right);
+		return parenthesize(expr.operator.lexeme, Arrays.asList(expr.left, expr.right));
+	}
+	
+	@Override
+	public String visitExprCall(Call expr) {
+		String callee = expr.callee.accept(this);
+		return parenthesize(callee, expr.arguments);
 	}
 
 	@Override
 	public String visitExprGrouping(Grouping expr) {
-		return parenthesize("group", expr.expression);
+		return parenthesize("group", Arrays.asList(expr.expression));
 	}
 
 	@Override
@@ -54,15 +64,15 @@ public class ASTPrinter implements Expr.Visitor<String> {
 	
 	@Override
 	public String visitExprLogical(Logical expr) {
-		return parenthesize(expr.operator.lexeme, expr.left, expr.right);
+		return parenthesize(expr.operator.lexeme, Arrays.asList(expr.left, expr.right));
 	}
 
 	@Override
 	public String visitExprUnary(Unary expr) {
-		return parenthesize(expr.operator.lexeme, expr.right);
+		return parenthesize(expr.operator.lexeme, Arrays.asList(expr.right));
 	}
 	
-	private String parenthesize(String name, Expr... exprs) {
+	private String parenthesize(String name, List<Expr> exprs) {
 		StringBuilder builder = new StringBuilder();
 		
 		builder.append("(");

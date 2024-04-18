@@ -1,5 +1,6 @@
 package lox;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lox.Expr.*;
@@ -7,7 +8,30 @@ import lox.Stmt.*;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	
-	private Environment environment = new Environment();
+	private final Environment globals = new Environment();
+	
+	private Environment environment = globals;
+	
+	public Interpreter() {
+		globals.define("clock", new LoxCallable() {
+			
+			@Override
+			public Object call(Interpreter interpreter, List<Object> arguments) {
+				return System.currentTimeMillis() / 1000;
+			}
+			
+			@Override
+			public int arity() {
+				return 0;
+			}
+			
+			@Override
+			public String toString() {
+				return "<native fn>";
+			}
+			
+		});
+	}
 	
 	public void interpret(List<Stmt> statements) {
 		try {
@@ -123,6 +147,31 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 				break;
 		}
 		return null;
+	}
+	
+
+	@Override
+	public Object visitExprCall(Call expr) {
+		
+		Object calleeObject = evaluate(expr.callee);
+		if(!(calleeObject instanceof LoxCallable)) {
+			throw new RuntimeError(expr.paren, "Callee not a function or class");
+		}
+		LoxCallable callee = (LoxCallable)calleeObject;
+		if(expr.arguments.size() != callee.arity()) {
+			throw new RuntimeError(
+				expr.paren,
+				"Expected '" + callee.arity() + "' arguments, but got '" + expr.arguments.size() + "'."
+			);
+		}
+		
+		List<Object> arguments = new ArrayList<Object>();
+		for(Expr argumentExpr : expr.arguments) {
+			Object argumentObject = evaluate(argumentExpr);
+			arguments.add(argumentObject);
+		}
+		
+		return callee.call(this, arguments);
 	}
 
 	@Override

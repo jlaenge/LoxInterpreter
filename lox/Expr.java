@@ -7,6 +7,7 @@ public abstract class Expr {
     interface Visitor<T> {
         public T visitExprAssign(Assign expr);
         public T visitExprBinary(Binary expr);
+        public T visitExprCall(Call expr);
         public T visitExprGrouping(Grouping expr);
         public T visitExprLiteral(Literal expr);
         public T visitExprLogical(Logical expr);
@@ -39,6 +40,20 @@ public abstract class Expr {
         }
         <T> T accept(Visitor<T> visitor) {
             return visitor.visitExprBinary(this);
+        }
+    }
+
+    public static class Call extends Expr {
+        public Expr callee;
+        public Token paren;
+        public List<Expr> arguments;
+        public Call(Expr callee, Token paren, List<Expr> arguments) {
+            this.callee = callee;
+            this.paren = paren;
+            this.arguments = arguments;
+        }
+        <T> T accept(Visitor<T> visitor) {
+            return visitor.visitExprCall(this);
         }
     }
 

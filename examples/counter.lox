@@ -1,0 +1,20 @@
+fun makeCounter() {
+	var i = 0;
+	fun counter() {
+		i = i + 1;
+		return i;
+	}
+	return counter;
+}
+
+print "Counter 1";
+var myCounter1 = makeCounter();
+for(var i=0; i<10; i=i+1) {
+	print myCounter1();
+}
+
+print "Counter 2";
+var myCounter2 = makeCounter();
+for(var i=0; i<10; i=i+1) {
+	print myCounter2();
+}

@@ -1,10 +1,16 @@
-package lox;
+package lox.pass;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import lox.Environment;
+import lox.Expr;
+import lox.Stmt;
 import lox.Expr.*;
+import lox.Lox;
+import lox.RuntimeError;
 import lox.Stmt.*;
+import lox.Token;
 import lox.callable.LoxCallable;
 import lox.callable.LoxFunction;
 import lox.error.Return;

@@ -58,7 +58,7 @@ public class GenerateAST {
 		
 		// visitor pattern
 		defineVisitor(writer, baseName, types);
-		writer.println("abstract <T> T accept(Visitor<T> visitor);");
+		writer.println("public abstract <T> T accept(Visitor<T> visitor);");
 		writer.println();
 		
 		// sub-classes
@@ -79,7 +79,7 @@ public class GenerateAST {
 	private static void defineVisitor(PrettyPrintWriter writer, String baseName, List<String> types) {
 		
 		// INTERFACE: open
-		writer.println("interface Visitor<T> {");
+		writer.println("public interface Visitor<T> {");
 		writer.indent();
 		
 		// visit-methods
@@ -129,7 +129,7 @@ public class GenerateAST {
 		writer.println("}");
 		
 		// VISITOR: open
-		writer.println("<T> T accept(Visitor<T> visitor) {");
+		writer.println("public <T> T accept(Visitor<T> visitor) {");
 		writer.indent();
 		
 		writer.println("return visitor.visit" + baseName + className + "(this);");

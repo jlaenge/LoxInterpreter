@@ -10,6 +10,7 @@ import java.util.List;
 
 import lox.parse.ParseError;
 import lox.parse.Parser;
+import lox.pass.Interpreter;
 
 public class Lox {
 	

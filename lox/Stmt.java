@@ -4,7 +4,7 @@ import java.util.List;
 
 public abstract class Stmt {
 
-    interface Visitor<T> {
+    public interface Visitor<T> {
         public T visitStmtBlock(Block stmt);
         public T visitStmtExpression(Expression stmt);
         public T visitStmtFunction(Function stmt);
@@ -15,14 +15,14 @@ public abstract class Stmt {
         public T visitStmtWhile(While stmt);
     }
 
-    abstract <T> T accept(Visitor<T> visitor);
+    public abstract <T> T accept(Visitor<T> visitor);
 
     public static class Block extends Stmt {
         public List<Stmt> statements;
         public Block(List<Stmt> statements) {
             this.statements = statements;
         }
-        <T> T accept(Visitor<T> visitor) {
+        public <T> T accept(Visitor<T> visitor) {
             return visitor.visitStmtBlock(this);
         }
     }
@@ -32,7 +32,7 @@ public abstract class Stmt {
         public Expression(Expr expression) {
             this.expression = expression;
         }
-        <T> T accept(Visitor<T> visitor) {
+        public <T> T accept(Visitor<T> visitor) {
             return visitor.visitStmtExpression(this);
         }
     }
@@ -46,7 +46,7 @@ public abstract class Stmt {
             this.parameters = parameters;
             this.body = body;
         }
-        <T> T accept(Visitor<T> visitor) {
+        public <T> T accept(Visitor<T> visitor) {
             return visitor.visitStmtFunction(this);
         }
     }
@@ -60,7 +60,7 @@ public abstract class Stmt {
             this.thenBranch = thenBranch;
             this.elseBranch = elseBranch;
         }
-        <T> T accept(Visitor<T> visitor) {
+        public <T> T accept(Visitor<T> visitor) {
             return visitor.visitStmtIf(this);
         }
     }
@@ -70,7 +70,7 @@ public abstract class Stmt {
         public Print(Expr expression) {
             this.expression = expression;
         }
-        <T> T accept(Visitor<T> visitor) {
+        public <T> T accept(Visitor<T> visitor) {
             return visitor.visitStmtPrint(this);
         }
     }
@@ -82,7 +82,7 @@ public abstract class Stmt {
             this.keyword = keyword;
             this.expression = expression;
         }
-        <T> T accept(Visitor<T> visitor) {
+        public <T> T accept(Visitor<T> visitor) {
             return visitor.visitStmtReturn(this);
         }
     }
@@ -94,7 +94,7 @@ public abstract class Stmt {
             this.name = name;
             this.initializer = initializer;
         }
-        <T> T accept(Visitor<T> visitor) {
+        public <T> T accept(Visitor<T> visitor) {
             return visitor.visitStmtVar(this);
         }
     }
@@ -106,7 +106,7 @@ public abstract class Stmt {
             this.condition = condition;
             this.body = body;
         }
-        <T> T accept(Visitor<T> visitor) {
+        public <T> T accept(Visitor<T> visitor) {
             return visitor.visitStmtWhile(this);
         }
     }

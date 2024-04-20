@@ -3,9 +3,9 @@ package lox.callable;
 import java.util.List;
 
 import lox.Environment;
-import lox.Interpreter;
 import lox.Stmt;
 import lox.error.Return;
+import lox.pass.Interpreter;
 
 public class LoxFunction implements LoxCallable {
 	

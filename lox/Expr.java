@@ -4,7 +4,7 @@ import java.util.List;
 
 public abstract class Expr {
 
-    interface Visitor<T> {
+    public interface Visitor<T> {
         public T visitExprAssign(Assign expr);
         public T visitExprBinary(Binary expr);
         public T visitExprCall(Call expr);
@@ -15,7 +15,7 @@ public abstract class Expr {
         public T visitExprVariable(Variable expr);
     }
 
-    abstract <T> T accept(Visitor<T> visitor);
+    public abstract <T> T accept(Visitor<T> visitor);
 
     public static class Assign extends Expr {
         public Token name;
@@ -24,7 +24,7 @@ public abstract class Expr {
             this.name = name;
             this.expression = expression;
         }
-        <T> T accept(Visitor<T> visitor) {
+        public <T> T accept(Visitor<T> visitor) {
             return visitor.visitExprAssign(this);
         }
     }
@@ -38,7 +38,7 @@ public abstract class Expr {
             this.operator = operator;
             this.right = right;
         }
-        <T> T accept(Visitor<T> visitor) {
+        public <T> T accept(Visitor<T> visitor) {
             return visitor.visitExprBinary(this);
         }
     }
@@ -52,7 +52,7 @@ public abstract class Expr {
             this.paren = paren;
             this.arguments = arguments;
         }
-        <T> T accept(Visitor<T> visitor) {
+        public <T> T accept(Visitor<T> visitor) {
             return visitor.visitExprCall(this);
         }
     }
@@ -62,7 +62,7 @@ public abstract class Expr {
         public Grouping(Expr expression) {
             this.expression = expression;
         }
-        <T> T accept(Visitor<T> visitor) {
+        public <T> T accept(Visitor<T> visitor) {
             return visitor.visitExprGrouping(this);
         }
     }
@@ -72,7 +72,7 @@ public abstract class Expr {
         public Literal(Object value) {
             this.value = value;
         }
-        <T> T accept(Visitor<T> visitor) {
+        public <T> T accept(Visitor<T> visitor) {
             return visitor.visitExprLiteral(this);
         }
     }
@@ -86,7 +86,7 @@ public abstract class Expr {
             this.operator = operator;
             this.right = right;
         }
-        <T> T accept(Visitor<T> visitor) {
+        public <T> T accept(Visitor<T> visitor) {
             return visitor.visitExprLogical(this);
         }
     }
@@ -98,7 +98,7 @@ public abstract class Expr {
             this.operator = operator;
             this.right = right;
         }
-        <T> T accept(Visitor<T> visitor) {
+        public <T> T accept(Visitor<T> visitor) {
             return visitor.visitExprUnary(this);
         }
     }
@@ -108,7 +108,7 @@ public abstract class Expr {
         public Variable(Token name) {
             this.name = name;
         }
-        <T> T accept(Visitor<T> visitor) {
+        public <T> T accept(Visitor<T> visitor) {
             return visitor.visitExprVariable(this);
         }
     }

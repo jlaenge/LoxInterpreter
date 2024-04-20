@@ -2,7 +2,7 @@ package lox.callable;
 
 import java.util.List;
 
-import lox.Interpreter;
+import lox.pass.Interpreter;
 
 public interface LoxCallable {
 

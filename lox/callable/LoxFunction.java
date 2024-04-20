@@ -5,6 +5,7 @@ import java.util.List;
 import lox.Environment;
 import lox.Interpreter;
 import lox.Stmt;
+import lox.error.Return;
 
 public class LoxFunction implements LoxCallable {
 	
@@ -16,12 +17,19 @@ public class LoxFunction implements LoxCallable {
 
 	@Override
 	public Object call(Interpreter interpreter, List<Object> arguments) {
+		
 		Environment environment = new Environment(interpreter.globals);
 		for(int i=0; i<arity(); i++) {
 			environment.define(function.parameters.get(i).lexeme, arguments.get(i));
 		}
-		interpreter.executeBlock(function.body, environment);
+		
+		try {
+			interpreter.executeBlock(function.body, environment);
+		} catch (Return error) {
+			return error.value;
+		}
 		return null;
+		
 	}
 
 	@Override

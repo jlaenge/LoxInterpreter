@@ -7,6 +7,7 @@ import lox.Expr.*;
 import lox.Stmt.*;
 import lox.callable.LoxCallable;
 import lox.callable.LoxFunction;
+import lox.error.Return;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	
@@ -82,6 +83,15 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 		Object value = evaluate(stmt.expression);
 		System.out.println(stringify(value));
 		return null;
+	}
+	
+	@Override
+	public Void visitStmtReturn(Stmt.Return stmt) {
+		Object value = null;
+		if(stmt.expression != null) {
+			value = evaluate(stmt.expression);
+		}
+		throw new Return(value);
 	}
 	
 	@Override

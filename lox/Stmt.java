@@ -10,6 +10,7 @@ public abstract class Stmt {
         public T visitStmtFunction(Function stmt);
         public T visitStmtIf(If stmt);
         public T visitStmtPrint(Print stmt);
+        public T visitStmtReturn(Return stmt);
         public T visitStmtVar(Var stmt);
         public T visitStmtWhile(While stmt);
     }
@@ -71,6 +72,18 @@ public abstract class Stmt {
         }
         <T> T accept(Visitor<T> visitor) {
             return visitor.visitStmtPrint(this);
+        }
+    }
+
+    public static class Return extends Stmt {
+        public Token keyword;
+        public Expr expression;
+        public Return(Token keyword, Expr expression) {
+            this.keyword = keyword;
+            this.expression = expression;
+        }
+        <T> T accept(Visitor<T> visitor) {
+            return visitor.visitStmtReturn(this);
         }
     }
 

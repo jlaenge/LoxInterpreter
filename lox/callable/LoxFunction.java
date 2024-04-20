@@ -9,16 +9,18 @@ import lox.error.Return;
 
 public class LoxFunction implements LoxCallable {
 	
-	private Stmt.Function function;
+	private final Stmt.Function function;
+	private final Environment closure;
 	
-	public LoxFunction(Stmt.Function function) {
+	public LoxFunction(Stmt.Function function, Environment closure) {
 		this.function = function;
+		this.closure = closure;
 	}
 
 	@Override
 	public Object call(Interpreter interpreter, List<Object> arguments) {
 		
-		Environment environment = new Environment(interpreter.globals);
+		Environment environment = new Environment(closure);
 		for(int i=0; i<arity(); i++) {
 			environment.define(function.parameters.get(i).lexeme, arguments.get(i));
 		}

@@ -1,7 +1,9 @@
 package lox.pass;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lox.Environment;
 import lox.Expr;
@@ -20,6 +22,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	public final Environment globals = new Environment();
 	
 	private Environment environment = globals;
+	private Map<Expr, Integer> locals = new HashMap<Expr, Integer>();
 	
 	public Interpreter() {
 		globals.define("clock", new LoxCallable() {
@@ -123,7 +126,14 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	@Override
 	public Object visitExprAssign(Assign expr) {
 		Object value = evaluate(expr.expression);
-		environment.assign(expr.name, value);
+		
+		Integer distance = locals.get(expr);
+		if(distance != null) {
+			environment.assignAt(distance, expr.name, value);
+		} else {
+			globals.assign(expr.name, value);
+		}
+		
 		return value;
 	}
 	
@@ -244,7 +254,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
 	@Override
 	public Object visitExprVariable(Variable expr) {
-		return environment.get(expr.name);
+		return lookupVariable(expr.name, expr);
 	}
 	
 	private void checkNumberOperand(Token operator, Object operand) {
@@ -305,6 +315,19 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	
 	private Object evaluate(Expr expr) {
 		return expr.accept(this);
+	}
+	
+	private Object lookupVariable(Token name, Expr expr) {
+		Integer distance = locals.get(expr);
+		if(distance != null) {
+			return environment.getAt(distance, name.lexeme);
+		} else {
+			return globals.get(name);
+		}
+	}
+	
+	public void resolve(Expr expr, int depth) {
+		locals.put(expr, depth);
 	}
 	
 	public String stringify(Object value) {

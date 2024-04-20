@@ -11,6 +11,7 @@ import java.util.List;
 import lox.parse.ParseError;
 import lox.parse.Parser;
 import lox.pass.Interpreter;
+import lox.pass.Resolver;
 
 public class Lox {
 	
@@ -94,6 +95,9 @@ public class Lox {
 		Parser parser = new Parser(tokens);
 		List<Stmt> statements = parser.parse();
 		if(hadError) return;
+		
+		Resolver resolver = new Resolver(interpreter);
+		resolver.resolve(statements);
 		
 		interpreter.interpret(statements);
 		

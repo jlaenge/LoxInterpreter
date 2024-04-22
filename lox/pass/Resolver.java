@@ -30,6 +30,12 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 	
 	private final Interpreter interpreter;
 	private final Stack<Map<String, Boolean>> scopes = new Stack<Map<String,Boolean>>();
+	private FunctionType currentFunction = FunctionType.NONE;
+	
+	private enum FunctionType {
+		NONE,
+		FUNCTION
+	}
 	
 	public Resolver(Interpreter interpreter) {
 		this.interpreter = interpreter;
@@ -81,7 +87,7 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 	public Void visitStmtFunction(Function stmt) {
 		declare(stmt.name);
 		define(stmt.name);
-		resolveFunction(stmt);
+		resolveFunction(stmt, FunctionType.FUNCTION);
 		return null;
 	}
 
@@ -106,10 +112,15 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 	}
 	@Override
 	public Void visitStmtReturn(Return stmt) {
+		
+		if(currentFunction == FunctionType.NONE) {
+			Lox.error(stmt.keyword, "Return statement outside of function or method.");
+		}
 		if(stmt.expression != null) {
 			resolve(stmt.expression);
 		}
 		return null;
+		
 	}
 	@Override
 	public Void visitStmtWhile(While stmt) {
@@ -175,14 +186,21 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 			}
 		}
 	}
-	private void resolveFunction(Function function) {
+	private void resolveFunction(Function function, FunctionType functionType) {
+		
+		FunctionType encolsingFunction = currentFunction;
+		currentFunction = functionType;
 		beginScope();
+		
 		for(Token parameter : function.parameters) {
 			declare(parameter);
 			define(parameter);
 		}
 		resolveStatements(function.body);
+		
 		endScope();
+		currentFunction = encolsingFunction;
+		
 	}
 	
 	private void beginScope() {
@@ -194,8 +212,14 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 	
 	private void declare(Token name) {
 		if(!scopes.isEmpty()) {
+			
 			Map<String, Boolean> scope = scopes.peek();
+			if(scope.containsKey(name.lexeme)) {
+				Lox.error(name, "Redeclaration of variable.");
+			}
+			
 			scope.put(name.lexeme, false);
+			
 		}
 	}
 	private void define(Token name) {

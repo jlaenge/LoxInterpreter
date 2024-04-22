@@ -65,7 +65,7 @@ public class Parser {
 		}
 		
 		consume(RIGHT_BRACE, "Expected '}' after class body.");
-		return new Stmt.Class(name, null);
+		return new Stmt.Class(name, methods);
 	}
 	
 	private Function funDeclaration(String kind) {

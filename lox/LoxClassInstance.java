@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lox.callable.LoxClass;
+import lox.callable.LoxFunction;
 
 public class LoxClassInstance {
 	
@@ -21,6 +22,12 @@ public class LoxClassInstance {
 		if(fields.containsKey(name.lexeme)) {
 			return fields.get(name.lexeme);
 		}
+		
+		LoxFunction method = loxClass.findMethod(name);
+		if(method != null) {
+			return method;
+		}
+		
 		throw new RuntimeError(name, "Undefined property '" + name.lexeme + "'.");
 	}
 	

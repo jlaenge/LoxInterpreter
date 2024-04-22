@@ -17,6 +17,7 @@ import lox.Expr.Variable;
 import lox.Lox;
 import lox.Stmt;
 import lox.Stmt.Block;
+import lox.Stmt.Class;
 import lox.Stmt.Expression;
 import lox.Stmt.Function;
 import lox.Stmt.If;
@@ -80,6 +81,14 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 	public Void visitExprAssign(Assign expr) {
 		resolve(expr.expression);
 		resolveLocal(expr.expression, expr.name);
+		return null;
+	}
+
+
+	@Override
+	public Void visitStmtClass(Class stmt) {
+		declare(stmt.name);
+		define(stmt.name);
 		return null;
 	}
 	
@@ -228,5 +237,5 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 			scope.put(name.lexeme, true);
 		}
 	}
-	
+
 }

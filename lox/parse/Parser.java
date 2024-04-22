@@ -6,6 +6,7 @@ import java.util.List;
 
 import lox.Expr;
 import lox.Stmt;
+import lox.Stmt.Function;
 import lox.Token;
 import lox.TokenType;
 
@@ -38,7 +39,9 @@ public class Parser {
 	
 	private Stmt declaration() {
 		try {
-			if(match(FUNCTION)) {
+			if(match(CLASS)) {
+				return classDeclaration();
+			} else if(match(FUNCTION)) {
 				return funDeclaration("function");
 			} else if(match(VAR)) {
 				return varDeclaration();
@@ -51,7 +54,21 @@ public class Parser {
 		}
 	}
 	
-	private Stmt funDeclaration(String kind) {
+	private Stmt classDeclaration() {
+		Token name = consume(IDENTIFIER, "Expected class name.");
+		consume(LEFT_BRACE, "Expected '{' before class body.");
+		
+		List<Function> methods = new ArrayList<Stmt.Function>();
+		while(!check(RIGHT_BRACE) && !isAtEnd()) {
+			Function method = funDeclaration("method");
+			methods.add(method);
+		}
+		
+		consume(RIGHT_BRACE, "Expected '}' after class body.");
+		return new Stmt.Class(name, null);
+	}
+	
+	private Function funDeclaration(String kind) {
 		Token name = consume(IDENTIFIER, "Expected " + kind + " name.");
 		
 		List<Token> parameters = new ArrayList<Token>();

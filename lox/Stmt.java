@@ -6,6 +6,7 @@ public abstract class Stmt {
 
     public interface Visitor<T> {
         public T visitStmtBlock(Block stmt);
+        public T visitStmtClass(Class stmt);
         public T visitStmtExpression(Expression stmt);
         public T visitStmtFunction(Function stmt);
         public T visitStmtIf(If stmt);
@@ -24,6 +25,18 @@ public abstract class Stmt {
         }
         public <T> T accept(Visitor<T> visitor) {
             return visitor.visitStmtBlock(this);
+        }
+    }
+
+    public static class Class extends Stmt {
+        public Token name;
+        public List<Function> methods;
+        public Class(Token name, List<Function> methods) {
+            this.name = name;
+            this.methods = methods;
+        }
+        public <T> T accept(Visitor<T> visitor) {
+            return visitor.visitStmtClass(this);
         }
     }
 

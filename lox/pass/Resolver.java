@@ -14,6 +14,7 @@ import lox.Expr.Grouping;
 import lox.Expr.Literal;
 import lox.Expr.Logical;
 import lox.Expr.Set;
+import lox.Expr.This;
 import lox.Expr.Unary;
 import lox.Expr.Variable;
 import lox.Lox;
@@ -92,10 +93,13 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 	public Void visitStmtClass(Class stmt) {
 		declare(stmt.name);
 		define(stmt.name);
-		
+	
+		beginScope();
+		scopes.peek().put("this", true);
 		for(Function method : stmt.methods) {
 			resolveFunction(method, FunctionType.METHOD);
 		}
+		endScope();
 		
 		return null;
 	}
@@ -182,6 +186,12 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 	public Void visitExprSet(Set expr) {
 		resolve(expr.object);
 		resolve(expr.value);
+		return null;
+	}
+
+	@Override
+	public Void visitExprThis(This expr) {
+		resolveLocal(expr, expr.keyword);
 		return null;
 	}
 	@Override

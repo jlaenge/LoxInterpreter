@@ -11,6 +11,7 @@ import lox.Expr.Grouping;
 import lox.Expr.Literal;
 import lox.Expr.Logical;
 import lox.Expr.Set;
+import lox.Expr.This;
 import lox.Expr.Unary;
 import lox.Expr.Variable;
 
@@ -81,6 +82,11 @@ public class ASTPrinter implements Expr.Visitor<String> {
 			parenthesize(".", expr.object, expr.name),
 			expr.value.accept(this)
 		));
+	}
+	
+	@Override
+	public String visitExprThis(This expr) {
+		return "this";
 	}
 
 	@Override

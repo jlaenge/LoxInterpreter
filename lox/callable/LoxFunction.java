@@ -3,6 +3,7 @@ package lox.callable;
 import java.util.List;
 
 import lox.Environment;
+import lox.LoxClassInstance;
 import lox.Stmt;
 import lox.error.Return;
 import lox.pass.Interpreter;
@@ -37,6 +38,12 @@ public class LoxFunction implements LoxCallable {
 	@Override
 	public int arity() {
 		return function.parameters.size();
+	}
+	
+	public Object bind(LoxClassInstance instance) {
+		Environment environment = new Environment(closure);
+		environment.define("this", instance);
+		return new LoxFunction(function, environment);
 	}
 	
 	@Override

@@ -281,6 +281,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 		return value;
 		
 	}
+	
+
+	@Override
+	public Object visitExprThis(This expr) {
+		return lookupVariable(expr.keyword, expr);
+	}
 
 	@Override
 	public Object visitExprUnary(Unary expr) {

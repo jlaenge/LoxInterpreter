@@ -13,6 +13,7 @@ public abstract class Expr {
         public T visitExprLiteral(Literal expr);
         public T visitExprLogical(Logical expr);
         public T visitExprSet(Set expr);
+        public T visitExprThis(This expr);
         public T visitExprUnary(Unary expr);
         public T visitExprVariable(Variable expr);
     }
@@ -116,6 +117,16 @@ public abstract class Expr {
         }
         public <T> T accept(Visitor<T> visitor) {
             return visitor.visitExprSet(this);
+        }
+    }
+
+    public static class This extends Expr {
+        public Token keyword;
+        public This(Token keyword) {
+            this.keyword = keyword;
+        }
+        public <T> T accept(Visitor<T> visitor) {
+            return visitor.visitExprThis(this);
         }
     }
 

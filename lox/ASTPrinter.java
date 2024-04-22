@@ -6,9 +6,11 @@ import java.util.List;
 import lox.Expr.Assign;
 import lox.Expr.Binary;
 import lox.Expr.Call;
+import lox.Expr.Get;
 import lox.Expr.Grouping;
 import lox.Expr.Literal;
 import lox.Expr.Logical;
+import lox.Expr.Set;
 import lox.Expr.Unary;
 import lox.Expr.Variable;
 
@@ -50,6 +52,11 @@ public class ASTPrinter implements Expr.Visitor<String> {
 		String callee = expr.callee.accept(this);
 		return parenthesize(callee, expr.arguments);
 	}
+	
+	@Override
+	public String visitExprGet(Get expr) {
+		return parenthesize(".", expr.object, expr.name);
+	}
 
 	@Override
 	public String visitExprGrouping(Grouping expr) {
@@ -66,6 +73,15 @@ public class ASTPrinter implements Expr.Visitor<String> {
 	public String visitExprLogical(Logical expr) {
 		return parenthesize(expr.operator.lexeme, Arrays.asList(expr.left, expr.right));
 	}
+	
+
+	@Override
+	public String visitExprSet(Set expr) {
+		return parenthesizeStrings("=", Arrays.asList(
+			parenthesize(".", expr.object, expr.name),
+			expr.value.accept(this)
+		));
+	}
 
 	@Override
 	public String visitExprUnary(Unary expr) {
@@ -80,6 +96,32 @@ public class ASTPrinter implements Expr.Visitor<String> {
 		for(Expr expr : exprs) {
 			builder.append(" ");
 			builder.append(expr.accept(this));
+		}
+		builder.append(")");
+		
+		return builder.toString();
+	}
+	private String parenthesize(String name, Expr expr, Token token) {
+		StringBuilder builder = new StringBuilder();
+		
+		builder.append("(");
+		builder.append(name);
+		builder.append(" ");
+		builder.append(expr.accept(this));
+		builder.append(" ");
+		builder.append(token.literal);
+		builder.append(")");
+		
+		return builder.toString();
+	}
+	private String parenthesizeStrings(String name, List<String> subStrings) {
+		StringBuilder builder = new StringBuilder();
+		
+		builder.append("(");
+		builder.append(name);
+		for(String subString : subStrings) {
+			builder.append(" ");
+			builder.append(subString);
 		}
 		builder.append(")");
 		

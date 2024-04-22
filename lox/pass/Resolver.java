@@ -9,9 +9,11 @@ import lox.Expr;
 import lox.Expr.Assign;
 import lox.Expr.Binary;
 import lox.Expr.Call;
+import lox.Expr.Get;
 import lox.Expr.Grouping;
 import lox.Expr.Literal;
 import lox.Expr.Logical;
+import lox.Expr.Set;
 import lox.Expr.Unary;
 import lox.Expr.Variable;
 import lox.Lox;
@@ -149,6 +151,12 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 		resolveExpressions(expr.arguments);
 		return null;
 	}
+
+	@Override
+	public Void visitExprGet(Get expr) {
+		resolve(expr.object);
+		return null;
+	}
 	@Override
 	public Void visitExprGrouping(Grouping expr) {
 		resolve(expr.expression);
@@ -162,6 +170,12 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 	public Void visitExprLogical(Logical expr) {
 		resolve(expr.left);
 		resolve(expr.right);
+		return null;
+	}
+	@Override
+	public Void visitExprSet(Set expr) {
+		resolve(expr.object);
+		resolve(expr.value);
 		return null;
 	}
 	@Override

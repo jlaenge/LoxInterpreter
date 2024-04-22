@@ -10,6 +10,7 @@ import lox.Expr;
 import lox.Stmt;
 import lox.Expr.*;
 import lox.Lox;
+import lox.LoxClassInstance;
 import lox.RuntimeError;
 import lox.Stmt.*;
 import lox.Stmt.Class;
@@ -218,6 +219,20 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 		
 		return callee.call(this, arguments);
 	}
+	
+
+	@Override
+	public Object visitExprGet(Get expr) {
+		
+		Object object = evaluate(expr.object);
+		if(object instanceof LoxClassInstance) {
+			LoxClassInstance instance = (LoxClassInstance)object;
+			return instance.get(expr.name);
+		}
+		
+		throw new RuntimeError(expr.name, "Expression does not evaluate to class instance.");
+		
+	}
 
 	@Override
 	public Object visitExprGrouping(Grouping expr) {
@@ -244,7 +259,21 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 		}
 		return evaluate(expr.right);
 	}
-
+	
+	@Override
+	public Object visitExprSet(Set expr) {
+		
+		Object object = evaluate(expr.object);
+		if(!(object instanceof LoxClassInstance)) {
+			throw new RuntimeError(expr.name, "Expression does not evaluate to class instance.");
+		}
+		LoxClassInstance instance = (LoxClassInstance)object;
+		
+		Object value = evaluate(expr.value);
+		instance.set(expr.name, value);
+		return value;
+		
+	}
 
 	@Override
 	public Object visitExprUnary(Unary expr) {

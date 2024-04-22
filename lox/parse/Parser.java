@@ -235,6 +235,9 @@ public class Parser {
 			if(expr instanceof Expr.Variable) {
 				Token name = ((Expr.Variable)expr).name;
 				return new Expr.Assign(name, value);
+			} else if(expr instanceof Expr.Get) {
+				Expr.Get get = (Expr.Get)expr;
+				return new Expr.Set(get.object, get.name, value);
 			}
 			
 			error(equals, "Invalid lhs of assignment.");
@@ -330,8 +333,15 @@ public class Parser {
 	private Expr call() {
 		Expr expr = primary();
 		
-		while(match(LEFT_PARENTHESIS)) {
-			expr = finishCall(expr);
+		while(true) {
+			if(match(LEFT_PARENTHESIS)) {
+				expr = finishCall(expr);
+			} else if(match(DOT)) {
+				Token name = consume(IDENTIFIER, "Expected property name after '.'.");
+				expr = new Expr.Get(expr, name);
+			} else {
+				break;
+			}
 		}
 		
 		return expr;

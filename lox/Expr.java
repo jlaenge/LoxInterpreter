@@ -8,9 +8,11 @@ public abstract class Expr {
         public T visitExprAssign(Assign expr);
         public T visitExprBinary(Binary expr);
         public T visitExprCall(Call expr);
+        public T visitExprGet(Get expr);
         public T visitExprGrouping(Grouping expr);
         public T visitExprLiteral(Literal expr);
         public T visitExprLogical(Logical expr);
+        public T visitExprSet(Set expr);
         public T visitExprUnary(Unary expr);
         public T visitExprVariable(Variable expr);
     }
@@ -57,6 +59,18 @@ public abstract class Expr {
         }
     }
 
+    public static class Get extends Expr {
+        public Expr object;
+        public Token name;
+        public Get(Expr object, Token name) {
+            this.object = object;
+            this.name = name;
+        }
+        public <T> T accept(Visitor<T> visitor) {
+            return visitor.visitExprGet(this);
+        }
+    }
+
     public static class Grouping extends Expr {
         public Expr expression;
         public Grouping(Expr expression) {
@@ -88,6 +102,20 @@ public abstract class Expr {
         }
         public <T> T accept(Visitor<T> visitor) {
             return visitor.visitExprLogical(this);
+        }
+    }
+
+    public static class Set extends Expr {
+        public Expr object;
+        public Token name;
+        public Expr value;
+        public Set(Expr object, Token name, Expr value) {
+            this.object = object;
+            this.name = name;
+            this.value = value;
+        }
+        public <T> T accept(Visitor<T> visitor) {
+            return visitor.visitExprSet(this);
         }
     }
 

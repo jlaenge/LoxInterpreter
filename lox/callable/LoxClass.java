@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import lox.LoxClassInstance;
-import lox.Token;
 import lox.pass.Interpreter;
 
 public class LoxClass implements LoxCallable {
@@ -20,17 +19,26 @@ public class LoxClass implements LoxCallable {
 	@Override
 	public Object call(Interpreter interpreter, List<Object> arguments) {
 		LoxClassInstance instance = new LoxClassInstance(this);
+		LoxFunction initializer = findMethod("init");
+		if(initializer != null) {
+			initializer.bind(instance).call(interpreter, arguments);
+		}
 		return instance;
 	}
 
 	@Override
 	public int arity() {
-		return 0;
+		LoxFunction initializer = findMethod("init");
+		if(initializer != null) {
+			return initializer.arity();
+		} else {
+			return 0;
+		}
 	}
 	
-	public LoxFunction findMethod(Token name) {
-		if(methods.containsKey(name.lexeme)) {
-			return methods.get(name.lexeme);
+	public LoxFunction findMethod(String name) {
+		if(methods.containsKey(name)) {
+			return methods.get(name);
 		}
 		return null;
 	}

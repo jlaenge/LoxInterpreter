@@ -40,7 +40,7 @@ public class LoxFunction implements LoxCallable {
 		return function.parameters.size();
 	}
 	
-	public Object bind(LoxClassInstance instance) {
+	public LoxFunction bind(LoxClassInstance instance) {
 		Environment environment = new Environment(closure);
 		environment.define("this", instance);
 		return new LoxFunction(function, environment);

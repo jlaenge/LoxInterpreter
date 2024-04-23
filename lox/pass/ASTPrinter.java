@@ -1,8 +1,11 @@
-package lox;
+package lox.pass;
 
 import java.util.Arrays;
 import java.util.List;
 
+import lox.Expr;
+import lox.Token;
+import lox.TokenType;
 import lox.Expr.Assign;
 import lox.Expr.Binary;
 import lox.Expr.Call;
@@ -11,6 +14,7 @@ import lox.Expr.Grouping;
 import lox.Expr.Literal;
 import lox.Expr.Logical;
 import lox.Expr.Set;
+import lox.Expr.Super;
 import lox.Expr.This;
 import lox.Expr.Unary;
 import lox.Expr.Variable;
@@ -81,6 +85,14 @@ public class ASTPrinter implements Expr.Visitor<String> {
 		return parenthesizeStrings("=", Arrays.asList(
 			parenthesize(".", expr.object, expr.name),
 			expr.value.accept(this)
+		));
+	}
+	
+	@Override
+	public String visitExprSuper(Super expr) {
+		return parenthesizeStrings(".", Arrays.asList(
+			"super",
+			expr.method.lexeme
 		));
 	}
 	

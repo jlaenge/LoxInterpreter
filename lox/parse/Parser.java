@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import lox.Expr;
+import lox.Expr.Super;
+import lox.Expr.Variable;
 import lox.Stmt;
 import lox.Stmt.Function;
 import lox.Token;
@@ -56,6 +58,13 @@ public class Parser {
 	
 	private Stmt classDeclaration() {
 		Token name = consume(IDENTIFIER, "Expected class name.");
+		
+		Variable superclass = null;
+		if(match(LESS)) {
+			consume(IDENTIFIER, "Expected superclass name.");
+			superclass = new Expr.Variable(previous());
+		}
+		
 		consume(LEFT_BRACE, "Expected '{' before class body.");
 		
 		List<Function> methods = new ArrayList<Stmt.Function>();
@@ -65,7 +74,7 @@ public class Parser {
 		}
 		
 		consume(RIGHT_BRACE, "Expected '}' after class body.");
-		return new Stmt.Class(name, methods);
+		return new Stmt.Class(name, superclass, methods);
 	}
 	
 	private Function funDeclaration(String kind) {
@@ -370,6 +379,13 @@ public class Parser {
 		if(match(TRUE))  return new Expr.Literal(true);
 		if(match(NIL))   return new Expr.Literal(null);
 		if(match(THIS))  return new Expr.This(previous());
+		
+		if(match(SUPER)) {
+			Token keyword = previous();
+			consume(DOT, "Expected '.' after 'super' keyword.");
+			Token method = consume(IDENTIFIER, "Expected superclass method name.");
+			return new Super(keyword, method);
+		}
 		
 		if(match(NUMBER, STRING)) {
 			return new Expr.Literal(previous().literal);

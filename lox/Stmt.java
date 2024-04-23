@@ -30,9 +30,11 @@ public abstract class Stmt {
 
     public static class Class extends Stmt {
         public Token name;
+        public Expr.Variable superclass;
         public List<Function> methods;
-        public Class(Token name, List<Function> methods) {
+        public Class(Token name, Expr.Variable superclass, List<Function> methods) {
             this.name = name;
+            this.superclass = superclass;
             this.methods = methods;
         }
         public <T> T accept(Visitor<T> visitor) {

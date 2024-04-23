@@ -1,0 +1,21 @@
+class Superclass {
+
+	foo() { return "SuperFoo"; }
+	bar() { return "SuperBar"; }
+
+}
+
+class Subclass < Superclass {
+
+	bar() { return super.bar() + " -> Sub"; }
+
+}
+
+var instance1 = Superclass();
+var instance2 = Subclass();
+
+print instance1.foo();
+print instance1.bar();
+
+print instance2.foo();
+print instance2.bar();

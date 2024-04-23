@@ -14,6 +14,7 @@ import lox.Expr.Grouping;
 import lox.Expr.Literal;
 import lox.Expr.Logical;
 import lox.Expr.Set;
+import lox.Expr.Super;
 import lox.Expr.This;
 import lox.Expr.Unary;
 import lox.Expr.Variable;
@@ -103,6 +104,15 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 		currentClass = ClassType.CLASS;
 		declare(stmt.name);
 		define(stmt.name);
+		
+		if(stmt.superclass != null) {
+			if(stmt.superclass.name.lexeme.equals(stmt.name.lexeme)) {
+				Lox.error(stmt.superclass.name, "A class can not inherit itself.");
+			}
+			beginScope();
+			scopes.peek().put("super", true);
+			resolve(stmt.superclass);
+		}
 	
 		beginScope();
 		scopes.peek().put("this", true);
@@ -112,6 +122,9 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 			resolveFunction(method, type);
 		}
 		endScope();
+		if(stmt.superclass != null) {
+			endScope();
+		}
 		currentClass = enclosingClass;
 		
 		return null;
@@ -212,6 +225,12 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 	public Void visitExprSet(Set expr) {
 		resolve(expr.object);
 		resolve(expr.value);
+		return null;
+	}
+	
+	@Override
+	public Void visitExprSuper(Super expr) {
+		resolveLocal(expr, expr.keyword);
 		return null;
 	}
 

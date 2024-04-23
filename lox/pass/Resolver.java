@@ -40,6 +40,7 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 	private enum FunctionType {
 		NONE,
 		FUNCTION,
+		INITIALIZER,
 		METHOD
 	}
 	
@@ -106,7 +107,9 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 		beginScope();
 		scopes.peek().put("this", true);
 		for(Function method : stmt.methods) {
-			resolveFunction(method, FunctionType.METHOD);
+			boolean isInitializer = method.name.lexeme.equals("init");
+			FunctionType type = isInitializer ? FunctionType.INITIALIZER : FunctionType.METHOD;
+			resolveFunction(method, type);
 		}
 		endScope();
 		currentClass = enclosingClass;
@@ -143,10 +146,23 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 	}
 	@Override
 	public Void visitStmtReturn(Return stmt) {
+
+		switch(currentFunction) {
 		
-		if(currentFunction == FunctionType.NONE) {
-			Lox.error(stmt.keyword, "Return statement outside of function or method.");
+			case NONE:
+				Lox.error(stmt.keyword, "Return statement outside of function or method.");
+				break;
+				
+			case INITIALIZER:
+				if(stmt.expression != null) {
+					Lox.error(stmt.keyword, "Return statement in constructor not allowed.");
+				}
+				break;
+				
+			default:
 		}
+		
+		
 		if(stmt.expression != null) {
 			resolve(stmt.expression);
 		}

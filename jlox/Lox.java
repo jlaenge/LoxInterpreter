@@ -1,4 +1,4 @@
-package lox;
+package jlox;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,10 +8,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import lox.parse.ParseError;
-import lox.parse.Parser;
-import lox.pass.Interpreter;
-import lox.pass.Resolver;
+import jlox.parse.ParseError;
+import jlox.parse.Parser;
+import jlox.pass.Interpreter;
+import jlox.pass.Resolver;
 
 public class Lox {
 	

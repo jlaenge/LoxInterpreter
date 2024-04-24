@@ -1,4 +1,4 @@
-package lox.parse;
+package jlox.parse;
 
 public enum ParseErrorType {
 

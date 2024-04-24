@@ -1,8 +1,8 @@
-package lox.callable;
+package jlox.callable;
 
 import java.util.List;
 
-import lox.pass.Interpreter;
+import jlox.pass.Interpreter;
 
 public interface LoxCallable {
 

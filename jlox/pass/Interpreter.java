@@ -1,24 +1,23 @@
-package lox.pass;
+package jlox.pass;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lox.Environment;
-import lox.Expr;
-import lox.Stmt;
-import lox.Expr.*;
-import lox.Lox;
-import lox.LoxClassInstance;
-import lox.RuntimeError;
-import lox.Stmt.*;
-import lox.Stmt.Class;
-import lox.Token;
-import lox.callable.LoxCallable;
-import lox.callable.LoxClass;
-import lox.callable.LoxFunction;
-import lox.error.Return;
+import jlox.Environment;
+import jlox.Expr;
+import jlox.Lox;
+import jlox.LoxClassInstance;
+import jlox.RuntimeError;
+import jlox.Stmt;
+import jlox.Token;
+import jlox.Expr.*;
+import jlox.Stmt.*;
+import jlox.callable.LoxCallable;
+import jlox.callable.LoxClass;
+import jlox.callable.LoxFunction;
+import jlox.error.Return;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	
@@ -107,7 +106,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	}
 	
 	@Override
-	public Void visitStmtClass(Class stmt) {
+	public Void visitStmtClass(Stmt.Class stmt) {
 		Object superclass = null;
 		if(stmt.superclass != null) {
 			superclass = evaluate(stmt.superclass);

@@ -1,6 +1,6 @@
-package lox.parse;
+package jlox.parse;
 
-import lox.Token;
+import jlox.Token;
 
 public class ParseError extends RuntimeException {
 	

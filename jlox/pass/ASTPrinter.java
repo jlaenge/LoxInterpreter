@@ -1,23 +1,23 @@
-package lox.pass;
+package jlox.pass;
 
 import java.util.Arrays;
 import java.util.List;
 
-import lox.Expr;
-import lox.Token;
-import lox.TokenType;
-import lox.Expr.Assign;
-import lox.Expr.Binary;
-import lox.Expr.Call;
-import lox.Expr.Get;
-import lox.Expr.Grouping;
-import lox.Expr.Literal;
-import lox.Expr.Logical;
-import lox.Expr.Set;
-import lox.Expr.Super;
-import lox.Expr.This;
-import lox.Expr.Unary;
-import lox.Expr.Variable;
+import jlox.Expr;
+import jlox.Token;
+import jlox.TokenType;
+import jlox.Expr.Assign;
+import jlox.Expr.Binary;
+import jlox.Expr.Call;
+import jlox.Expr.Get;
+import jlox.Expr.Grouping;
+import jlox.Expr.Literal;
+import jlox.Expr.Logical;
+import jlox.Expr.Set;
+import jlox.Expr.Super;
+import jlox.Expr.This;
+import jlox.Expr.Unary;
+import jlox.Expr.Variable;
 
 public class ASTPrinter implements Expr.Visitor<String> {
 	

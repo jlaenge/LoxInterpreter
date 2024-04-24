@@ -1,12 +1,12 @@
-package lox.callable;
+package jlox.callable;
 
 import java.util.List;
 
-import lox.Environment;
-import lox.LoxClassInstance;
-import lox.Stmt;
-import lox.error.Return;
-import lox.pass.Interpreter;
+import jlox.Environment;
+import jlox.LoxClassInstance;
+import jlox.Stmt;
+import jlox.error.Return;
+import jlox.pass.Interpreter;
 
 public class LoxFunction implements LoxCallable {
 	

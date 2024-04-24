@@ -1,4 +1,4 @@
-package lox;
+package jlox;
 
 public class RuntimeError extends RuntimeException {
 

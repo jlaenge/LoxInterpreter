@@ -1,4 +1,4 @@
-package lox;
+package jlox;
 
 import java.util.List;
 

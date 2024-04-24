@@ -1,6 +1,6 @@
-package lox.parse;
+package jlox.parse;
 
-import lox.Lox;
+import jlox.Lox;
 
 public abstract class ParseErrorHandler {
 	

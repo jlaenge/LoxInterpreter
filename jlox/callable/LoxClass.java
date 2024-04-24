@@ -1,10 +1,10 @@
-package lox.callable;
+package jlox.callable;
 
 import java.util.List;
 import java.util.Map;
 
-import lox.LoxClassInstance;
-import lox.pass.Interpreter;
+import jlox.LoxClassInstance;
+import jlox.pass.Interpreter;
 
 public class LoxClass implements LoxCallable {
 	

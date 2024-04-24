@@ -1,10 +1,10 @@
-package lox;
+package jlox;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import lox.callable.LoxClass;
-import lox.callable.LoxFunction;
+import jlox.callable.LoxClass;
+import jlox.callable.LoxFunction;
 
 public class LoxClassInstance {
 	

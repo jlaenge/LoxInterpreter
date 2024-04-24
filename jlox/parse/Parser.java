@@ -1,18 +1,18 @@
-package lox.parse;
+package jlox.parse;
+
+import static jlox.TokenType.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import lox.Expr;
-import lox.Expr.Super;
-import lox.Expr.Variable;
-import lox.Stmt;
-import lox.Stmt.Function;
-import lox.Token;
-import lox.TokenType;
-
-import static lox.TokenType.*;
+import jlox.Expr;
+import jlox.Stmt;
+import jlox.Token;
+import jlox.TokenType;
+import jlox.Expr.Super;
+import jlox.Expr.Variable;
+import jlox.Stmt.Function;
 
 public class Parser {
 

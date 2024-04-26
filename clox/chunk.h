@@ -2,10 +2,13 @@
 #define CLOX_CHUNK_H_
 
 #include "common.h"
+
 #include "memory.h"
+#include "value.h"
 
 typedef enum OpCode_tag OpCode;
 enum OpCode_tag {
+	OP_CONSTANT,
 	OP_RETURN
 };
 
@@ -18,10 +21,12 @@ struct Chunk_tag {
 	int count;
 	int capacity;
 	uint8_t* code;
+	ValueArray constants;
 };
 
 void initChunk(Chunk* chunk);
 void freeChunk(Chunk* chunk);
 void writeChunk(Chunk* chunk, uint8_t byte);
+int addConstant(Chunk* chunk, Value value);
 
 #endif

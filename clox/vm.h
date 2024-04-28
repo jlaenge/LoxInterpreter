@@ -4,11 +4,17 @@
 #include "common.h"
 
 #include "chunk.h"
+#include "debug.h"
+#include "value.h"
+
+#define STACK_MAX 256
 
 typedef struct VM_tag VM;
 struct VM_tag {
 	Chunk* chunk;
 	uint8_t* ip;
+	Value stack[STACK_MAX];
+	Value* stackTop;
 };
 
 typedef enum InterpretResult_tag InterpretResult;
@@ -21,5 +27,7 @@ enum InterpretResult_tag {
 void initVM();
 void freeVM();
 InterpretResult interpret(Chunk* chunk);
+void push(Value value);
+Value pop();
 
 #endif

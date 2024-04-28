@@ -22,7 +22,9 @@ int main(int argc, char* argv[]) {
 	writeChunk(&chunk, OP_RETURN, 123);
 
 	// disassemble and interpret program
+	printf("Dissassembly:\n");
 	disassembleChunk(&chunk, "test chunk");
+	printf("Interpretation:\n");
 	interpret(&chunk);
 
 	// terminate VM and free chunk

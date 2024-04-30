@@ -6,6 +6,8 @@
 #include "debug.h"
 #include "vm.h"
 
+#include "programs.h"
+
 int main(int argc, char* argv[]) {
 
 	// spin up VM
@@ -16,23 +18,7 @@ int main(int argc, char* argv[]) {
 	initChunk(&chunk);
 
 	// create program
-	int constant1 = addConstant(&chunk, 1.2);
-	writeChunk(&chunk, OP_CONSTANT, 123);
-	writeChunk(&chunk, constant1, 123);
-
-	int constant2 = addConstant(&chunk, 3.4);
-	writeChunk(&chunk, OP_CONSTANT, 123);
-	writeChunk(&chunk, constant2, 123);
-
-	writeChunk(&chunk, OP_ADD, 123);
-
-	int constant3 = addConstant(&chunk, 5.6);
-	writeChunk(&chunk, OP_CONSTANT, 123);
-	writeChunk(&chunk, constant3, 123);
-
-	writeChunk(&chunk, OP_DIVIDE, 123);
-	writeChunk(&chunk, OP_NEGATE, 123);
-	writeChunk(&chunk, OP_RETURN, 123);
+	create_program1(&chunk);
 
 	// disassemble and interpret program
 	printf("Dissassembly:\n");

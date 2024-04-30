@@ -1,7 +1,7 @@
 #ifndef CLOX_VALUE_H_
 #define CLOX_VALUE_H_
 
-#include "common.h"
+#include <common.h>
 
 typedef double Value;
 

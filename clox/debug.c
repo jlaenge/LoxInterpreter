@@ -1,6 +1,6 @@
-#include "debug.h"
+#include <debug.h>
 
-#include "value.h"
+#include <value.h>
 
 #include <stdio.h>
 

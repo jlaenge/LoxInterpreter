@@ -1,7 +1,7 @@
 #ifndef CLOX_MEMORY_H_
 #define CLOX_MEMORY_H_
 
-#include "common.h"
+#include <common.h>
 
 /*
  * reallocates the size of the memory chunk pointed to by

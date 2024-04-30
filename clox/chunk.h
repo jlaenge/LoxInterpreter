@@ -1,10 +1,9 @@
 #ifndef CLOX_CHUNK_H_
 #define CLOX_CHUNK_H_
 
-#include "common.h"
-
-#include "memory.h"
-#include "value.h"
+#include <common.h>
+#include <memory.h>
+#include <value.h>
 
 typedef enum OpCode_tag OpCode;
 enum OpCode_tag {

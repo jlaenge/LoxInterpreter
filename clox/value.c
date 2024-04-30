@@ -1,6 +1,6 @@
-#include "value.h"
+#include <value.h>
 
-#include "memory.h"
+#include <memory.h>
 
 #include <stdio.h>
 

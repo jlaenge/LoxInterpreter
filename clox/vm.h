@@ -1,11 +1,9 @@
 #ifndef CLOX_VM_H_
 #define CLOX_VM_H_
 
-#include "common.h"
-
-#include "chunk.h"
-#include "debug.h"
-#include "value.h"
+#include <common.h>
+#include <chunk.h>
+#include <value.h>
 
 #define STACK_MAX 256
 
@@ -26,7 +24,7 @@ enum InterpretResult_tag {
 
 void initVM();
 void freeVM();
-InterpretResult interpret(Chunk* chunk);
+InterpretResult interpret(const char* source);
 void push(Value value);
 Value pop();
 

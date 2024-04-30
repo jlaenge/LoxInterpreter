@@ -1,4 +1,7 @@
-#include "vm.h"
+#include <vm.h>
+
+#include <compiler.h>
+#include <debug.h>
 
 #include <stdio.h>
 
@@ -75,11 +78,10 @@ static InterpretResult run() {
 
 }
 
-InterpretResult interpret(Chunk* chunk) {
-	assert(chunk != NULL);
-	vm.chunk = chunk;
-	vm.ip = vm.chunk->code;
-	return run();
+InterpretResult interpret(const char* source) {
+	assert(source != NULL);
+	compile(source);
+	return INTERPRET_OK;
 }
 void push(Value value) {
 	assert((int)(vm.stackTop - vm.stack) < STACK_MAX);

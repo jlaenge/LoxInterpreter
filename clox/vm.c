@@ -13,7 +13,7 @@ void initVM() {
 void freeVM() {}
 
 static void printStack() {
-	printf("        ");
+	printf("STACK:        ");
 	for(Value* slot = vm.stack; slot < vm.stackTop; slot++) {
 		printf("[ ");
 		printValue(*slot);
@@ -25,20 +25,41 @@ static InterpretResult run() {
 
 #define READ_BYTE() (*vm.ip++)
 #define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
+#define BINARY_OP(operator) \
+	do {\
+		double right = pop();\
+		double left = pop();\
+		double result = left operator right;\
+		push(result);\
+	} while(false)
 
 	while(true) {
 
-		uint8_t instruction = READ_BYTE();
 #ifdef DEBUG_TRACE_EXECUTION
 		printStack();
 		disassembleInstruction(vm.chunk, (int)(vm.ip - vm.chunk->code));
 #endif
 
+		uint8_t instruction = READ_BYTE();
 		switch(instruction) {
 			case OP_CONSTANT:
 				Value constant = READ_CONSTANT();
 				push(constant);
-				printf("\n");
+				break;
+			case OP_NEGATE:
+				push(-pop());
+				break;
+			case OP_ADD:
+				BINARY_OP(+);
+				break;
+			case OP_SUBTRACT:
+				BINARY_OP(-);
+				break;
+			case OP_MULTIPLY:
+				BINARY_OP(*);
+				break;
+			case OP_DIVIDE:
+				BINARY_OP(/);
 				break;
 			case OP_RETURN:
 				printValue(pop());
@@ -49,6 +70,8 @@ static InterpretResult run() {
 	}
 
 #undef READ_BYTE
+#undef READ_CONSTANT
+#undef BINARY_OP
 
 }
 

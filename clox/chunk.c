@@ -27,7 +27,7 @@ static void growChunk(Chunk* chunk) {
 	if(chunk->capacity == 0) {
 		chunk->capacity = MIN_CHUNK_SIZE;
 		chunk->code = reallocate(chunk->code, 0, chunk->capacity * sizeof(uint8_t));
-		chunk->lines = reallocate(chunk->lines, 0, chunk->capacity * sizeof(uint8_t));
+		chunk->lines = reallocate(chunk->lines, 0, chunk->capacity * sizeof(int));
 	}
 	// grow old chunk
 	else {

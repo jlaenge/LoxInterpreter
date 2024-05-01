@@ -69,6 +69,12 @@ static void skipWhitespaces() {
 				advance();
 				break;
 
+			// linebreak
+			case '\n':
+				scanner.line++;
+				advance();
+				break;
+
 			// comments
 			case '/':
 				if(peekNext() == '/') {
@@ -85,6 +91,41 @@ static void skipWhitespaces() {
 		}
 	}
 }
+static Token string() {
+	while(!isAtEnd() && peek() != '"') {
+		if(peek() == '\n') scanner.line++;
+		advance();
+	}
+
+	if(isAtEnd()) return errorToken("Unterminated string.");
+
+	advance();
+	return makeToken(TOKEN_STRING);
+}
+static bool isDigit(char c) {
+	return ('0' <= c && c <= '9');
+}
+static Token number() {
+	while(isDigit(peek())) advance();
+
+	if(peek() == '.' && isDigit(peekNext())) {
+		advance();
+		while(isDigit(peek())) advance();
+	}
+
+	return makeToken(TOKEN_NUMBER);
+}
+static bool isAlpha(char c) {
+	return (
+		('a' <= c && c <= 'z') ||
+		('A' <= c && c <= 'Z') ||
+		(c == '_')
+	);
+}
+static Token identifier() {
+	while(isAlpha(peek()) || isDigit(peek())) advance();
+	return makeToken(TOKEN_IDENTIFIER);
+}
 
 Token scanToken() {
 	skipWhitespaces();
@@ -94,6 +135,11 @@ Token scanToken() {
 	if(isAtEnd()) return makeToken(EOF);
 
 	char c = advance();
+
+	// literal tokens
+	if(isAlpha(c)) return identifier();
+	if(isDigit(c)) return number();
+
 	switch(c) {
 
 		// single-character tokens
@@ -114,6 +160,9 @@ Token scanToken() {
 		case '=': return makeToken(match('=') ? TOKEN_EQUAL_EQUAL : TOKEN_EQUAL);
 		case '<': return makeToken(match('=') ? TOKEN_LESS_EQUAL : TOKEN_LESS);
 		case '>': return makeToken(match('=') ? TOKEN_GREATER_EQUAL : TOKEN_GREATER);
+
+		// string tokens
+		case '"': return string();
 
 	}
 

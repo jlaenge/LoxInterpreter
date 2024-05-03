@@ -1,8 +1,11 @@
 #ifndef CLOX_COMPILER_H_
 #define CLOX_COMPILER_H_
 
-#include "common.h"
+#include <common.h>
 
-void compile(const char* source);
+#include <chunk.h>
+#include <scanner.h>
+
+bool compile(const char* source, Chunk* chunk);
 
 #endif

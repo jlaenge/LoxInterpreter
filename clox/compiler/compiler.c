@@ -2,6 +2,10 @@
 
 #include <scanner.h>
 
+#ifdef DEBUG_PRINT_CODE
+	#include <debug.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -139,6 +143,12 @@ static void emitConstant(double value) {
 
 static void endCompiler() {
 	emitReturn();
+
+#ifdef DEBUG_PRINT_CODE
+	if(!parser.hasError) {
+		disassembleChunk(currentChunk(), "code");
+	}
+#endif
 }
 
 
@@ -158,8 +168,9 @@ static void parsePrecedence(Precedence precedence) {
 		error("Expected expression.");
 		return;
 	}
+	prefixFunction();
 
-	while(precedence <= getRule(parser.previous.type)->precedence) {
+	while(precedence <= getRule(parser.current.type)->precedence) {
 		advance();
 		ParseFunction infixFunction = getRule(parser.previous.type)->infix;
 		infixFunction();
@@ -193,7 +204,7 @@ static void binary() {
 	ParseRule* rule = getRule(operator);
 	parsePrecedence((Precedence)(rule->precedence + 1));
 	switch(operator) {
-		case TOKEN_AND:		emitByte(OP_ADD); break;
+		case TOKEN_PLUS:	emitByte(OP_ADD); break;
 		case TOKEN_MINUS:	emitByte(OP_SUBTRACT); break;
 		case TOKEN_STAR:	emitByte(OP_MULTIPLY); break;
 		case TOKEN_SLASH:	emitByte(OP_DIVIDE); break;
@@ -225,7 +236,7 @@ bool compile(const char* source, Chunk* chunk) {
 	expression();
 	consume(TOKEN_EOF, "Expected end of expression");
 	endCompiler();
-	return parser.hasError;
+	return !parser.hasError;
 }
 
 ParseRule rules[] = {

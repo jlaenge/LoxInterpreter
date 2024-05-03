@@ -58,6 +58,8 @@ void repl() {
 		if(!fgets(line, sizeof(line), stdin)) {
 			printf("\n");
 			break;
+		} else {
+			line[strlen(line) - 1] = '\0';
 		}
 
 		interpret(line);

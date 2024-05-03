@@ -173,7 +173,7 @@ Token scanToken() {
 
 	scanner.start = scanner.current;
 
-	if(isAtEnd()) return makeToken(EOF);
+	if(isAtEnd()) return makeToken(TOKEN_EOF);
 
 	char c = advance();
 

@@ -1,6 +1,7 @@
 #include <compiler.h>
 
 #include <scanner.h>
+#include <value.h>
 
 #ifdef DEBUG_PRINT_CODE
 	#include <debug.h>
@@ -107,7 +108,7 @@ static void consume(TokenType type, const char* message) {
 	}
 }
 
-static uint8_t makeConstant(double value) {
+static uint8_t makeConstant(Value value) {
 	int constant = addConstant(currentChunk(), value);
 	if(constant > UINT8_MAX) {
 		error("Too many constants in current chunk.");
@@ -137,7 +138,7 @@ static void emitReturn() {
 	emitByte(OP_RETURN);
 }
 
-static void emitConstant(double value) {
+static void emitConstant(Value value) {
 	emitBytes(OP_CONSTANT, makeConstant(value));
 }
 
@@ -216,7 +217,7 @@ static void binary() {
 
 static void number() {
 	double value = strtod(parser.previous.start, NULL);
-	emitConstant(value);
+	emitConstant(NUMBER_VALUE(value));
 }
 
 static void initParser() {

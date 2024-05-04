@@ -64,10 +64,10 @@ static InterpretResult run() {
 
 		uint8_t instruction = READ_BYTE();
 		switch(instruction) {
-			case OP_CONSTANT:
-				Value constant = READ_CONSTANT();
-				push(constant);
-				break;
+			case OP_CONSTANT:	push(READ_CONSTANT());		break;
+			case OP_NIL:		push(NIL_VALUE);			break;
+			case OP_TRUE:		push(BOOLEAN_VALUE(true));	break;
+			case OP_FALSE:		push(BOOLEAN_VALUE(false));	break;
 			case OP_NEGATE:
 				if(IS_NUMBER(peek(0))) {
 					runtimeError("Operand must be a number.");

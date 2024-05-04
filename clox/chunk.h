@@ -8,6 +8,9 @@
 typedef enum OpCode_tag OpCode;
 enum OpCode_tag {
 	OP_CONSTANT,
+	OP_NIL,
+	OP_TRUE,
+	OP_FALSE,
 	OP_NEGATE,
 	OP_ADD,
 	OP_SUBTRACT,

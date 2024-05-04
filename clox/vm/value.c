@@ -46,5 +46,10 @@ void writeValueArray(ValueArray* array, Value value) {
 }
 
 void printValue(Value value) {
-	printf("%g", AS_NUMBER(value));
+	switch(value.type) {
+		case VALUE_BOOLEAN:	printf(AS_BOOLEAN(value) ? "true" : "false");	break;
+		case VALUE_NIL:		printf("nil");									break;
+		case VALUE_NUMBER:	printf("%g", AS_NUMBER(value));					break;
+	}
+
 }

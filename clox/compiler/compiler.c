@@ -191,12 +191,8 @@ static void unary() {
 
 	parsePrecedence(PRECEDENCE_UNARY);
 	switch(operator) {
-		case TOKEN_MINUS:
-			emitByte(OP_SUBTRACT);
-			break;
-		default:
-			assert(false);
-			break;
+		case TOKEN_MINUS:	emitByte(OP_SUBTRACT);	break;
+		default:			assert(false);			break;
 	}
 }
 static void binary() {
@@ -205,16 +201,21 @@ static void binary() {
 	ParseRule* rule = getRule(operator);
 	parsePrecedence((Precedence)(rule->precedence + 1));
 	switch(operator) {
-		case TOKEN_PLUS:	emitByte(OP_ADD); break;
-		case TOKEN_MINUS:	emitByte(OP_SUBTRACT); break;
-		case TOKEN_STAR:	emitByte(OP_MULTIPLY); break;
-		case TOKEN_SLASH:	emitByte(OP_DIVIDE); break;
-		default:
-			assert(false);
-			break;
+		case TOKEN_PLUS:	emitByte(OP_ADD); 		break;
+		case TOKEN_MINUS:	emitByte(OP_SUBTRACT); 	break;
+		case TOKEN_STAR:	emitByte(OP_MULTIPLY); 	break;
+		case TOKEN_SLASH:	emitByte(OP_DIVIDE); 	break;
+		default:			assert(false);			break;
 	}
 }
-
+static void literal() {
+	switch(parser.previous.type) {
+		case TOKEN_NIL: 	emitByte(OP_NIL); 	break;
+		case TOKEN_TRUE: 	emitByte(OP_TRUE); 	break;
+		case TOKEN_FALSE: 	emitByte(OP_FALSE); break;
+		default: 			assert(false); 		break;
+	}
+}
 static void number() {
 	double value = strtod(parser.previous.start, NULL);
 	emitConstant(NUMBER_VALUE(value));
@@ -276,9 +277,9 @@ ParseRule rules[] = {
 	[TOKEN_OR]						= { NULL, 		NULL, 	PRECEDENCE_NONE 	},
 	[TOKEN_IF] 					   	= { NULL, 		NULL, 	PRECEDENCE_NONE 	},
 	[TOKEN_ELSE]					= { NULL, 		NULL, 	PRECEDENCE_NONE 	},
-	[TOKEN_TRUE] 				   	= { NULL, 		NULL, 	PRECEDENCE_NONE 	},
-	[TOKEN_FALSE] 					= { NULL, 		NULL, 	PRECEDENCE_NONE 	},
-	[TOKEN_NIL]						= { NULL, 		NULL, 	PRECEDENCE_NONE 	},
+	[TOKEN_TRUE] 				   	= { literal,	NULL, 	PRECEDENCE_NONE 	},
+	[TOKEN_FALSE] 					= { literal,	NULL, 	PRECEDENCE_NONE 	},
+	[TOKEN_NIL]						= { literal,	NULL, 	PRECEDENCE_NONE 	},
 	[TOKEN_ERROR] 				   	= { NULL, 		NULL, 	PRECEDENCE_NONE 	},
 	[TOKEN_EOF] 					= { NULL, 		NULL, 	PRECEDENCE_NONE 	}
 };

@@ -69,7 +69,7 @@ static InterpretResult run() {
 			case OP_TRUE:		push(BOOLEAN_VALUE(true));	break;
 			case OP_FALSE:		push(BOOLEAN_VALUE(false));	break;
 			case OP_NEGATE:
-				if(IS_NUMBER(peek(0))) {
+				if(!IS_NUMBER(peek(0))) {
 					runtimeError("Operand must be a number.");
 					return INTERPRET_RUNTIME_ERROR;
 				}
@@ -86,6 +86,9 @@ static InterpretResult run() {
 				break;
 			case OP_DIVIDE:
 				BINARY_OP(NUMBER_VALUE, /);
+				break;
+			case OP_NOT:
+				push(BOOLEAN_VALUE(isFalsey(pop())));
 				break;
 			case OP_RETURN:
 				printValue(pop());
@@ -132,4 +135,7 @@ Value pop() {
 }
 Value peek(int distance) {
 	return vm.stackTop[-distance - 1];
+}
+bool isFalsey(Value value) {
+	return IS_NIL(value) || (IS_BOOLEAN(value) && !AS_BOOLEAN(value));
 }

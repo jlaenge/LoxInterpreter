@@ -44,7 +44,7 @@ static InterpretResult run() {
 #define READ_BYTE() (*vm.ip++)
 #define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
 #define BINARY_OP(valueType, operator) \
-	do {\
+	do { \
 		if(!IS_NUMBER(peek(0)) || !IS_NUMBER(peek(1))) { \
 			runtimeError("Operands must be numbers."); \
 			return INTERPRET_RUNTIME_ERROR; \
@@ -64,10 +64,23 @@ static InterpretResult run() {
 
 		uint8_t instruction = READ_BYTE();
 		switch(instruction) {
+
+			// values
 			case OP_CONSTANT:	push(READ_CONSTANT());		break;
 			case OP_NIL:		push(NIL_VALUE);			break;
 			case OP_TRUE:		push(BOOLEAN_VALUE(true));	break;
 			case OP_FALSE:		push(BOOLEAN_VALUE(false));	break;
+
+			// comparision
+			case OP_EQUAL:
+				Value right = pop();
+				Value left = pop();
+				push(BOOLEAN_VALUE(valuesEqual(left, right)));
+				break;
+			case OP_LESS:		BINARY_OP(BOOLEAN_VALUE, <);	break;
+			case OP_GREATER:	BINARY_OP(BOOLEAN_VALUE, >);	break;
+
+			// arithmetic
 			case OP_NEGATE:
 				if(!IS_NUMBER(peek(0))) {
 					runtimeError("Operand must be a number.");
@@ -75,25 +88,22 @@ static InterpretResult run() {
 				}
 				push(NUMBER_VALUE(-AS_NUMBER(pop())));
 				break;
-			case OP_ADD:
-				BINARY_OP(NUMBER_VALUE, +);
-				break;
-			case OP_SUBTRACT:
-				BINARY_OP(NUMBER_VALUE, -);
-				break;
-			case OP_MULTIPLY:
-				BINARY_OP(NUMBER_VALUE, *);
-				break;
-			case OP_DIVIDE:
-				BINARY_OP(NUMBER_VALUE, /);
-				break;
-			case OP_NOT:
-				push(BOOLEAN_VALUE(isFalsey(pop())));
-				break;
+			case OP_ADD:		BINARY_OP(NUMBER_VALUE, +);				break;
+			case OP_SUBTRACT:	BINARY_OP(NUMBER_VALUE, -);				break;
+			case OP_MULTIPLY:	BINARY_OP(NUMBER_VALUE, *);				break;
+			case OP_DIVIDE:		BINARY_OP(NUMBER_VALUE, /);				break;
+			case OP_NOT:		push(BOOLEAN_VALUE(isFalsey(pop())));	break;
+
+			// misc
 			case OP_RETURN:
 				printValue(pop());
 				printf("\n");
 				return INTERPRET_OK;
+
+			// error
+			default:
+				assert(false);
+
 		}
 
 	}

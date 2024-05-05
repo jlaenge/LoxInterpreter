@@ -7,17 +7,31 @@
 
 typedef enum OpCode_tag OpCode;
 enum OpCode_tag {
+
+	// values
 	OP_CONSTANT,
 	OP_NIL,
 	OP_TRUE,
 	OP_FALSE,
+
+	// comparison
+	OP_EQUAL,
+	OP_GREATER,
+	OP_LESS,
+
+	// arithmetic
 	OP_NEGATE,
 	OP_ADD,
 	OP_SUBTRACT,
 	OP_MULTIPLY,
 	OP_DIVIDE,
+
+	// boolean
 	OP_NOT,
+
+	// misc
 	OP_RETURN
+
 };
 
 /**

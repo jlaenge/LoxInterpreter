@@ -6,6 +6,16 @@
 
 #define MIN_ARRAY_SIZE 8
 
+bool valuesEqual(Value a, Value b) {
+	if(a.type != b.type) return false;
+
+	switch(a.type) {
+		case VALUE_BOOLEAN:	return (AS_BOOLEAN(a) == AS_BOOLEAN(b));
+		case VALUE_NIL:		return true;
+		case VALUE_NUMBER:	return (AS_NUMBER(a) == AS_NUMBER(b));
+		default:			assert(false); return false;
+	}
+}
 void initValueArray(ValueArray* array) {
 	assert(array != NULL);
 	array->count = 0;

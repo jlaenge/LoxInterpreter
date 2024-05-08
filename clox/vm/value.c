@@ -4,6 +4,7 @@
 #include <object.h>
 
 #include <stdio.h>
+#include <string.h>
 
 #define MIN_ARRAY_SIZE 8
 
@@ -14,6 +15,15 @@ bool valuesEqual(Value a, Value b) {
 		case VALUE_BOOLEAN:	return (AS_BOOLEAN(a) == AS_BOOLEAN(b));
 		case VALUE_NIL:		return true;
 		case VALUE_NUMBER:	return (AS_NUMBER(a) == AS_NUMBER(b));
+		case VALUE_OBJECT: {
+			ObjectString* left = AS_STRING(a);
+			ObjectString* right = AS_STRING(b);
+			return (
+				(left->length == right->length) &&
+				memcmp(left->characters, right->characters, (size_t)left->length) == 0
+			);
+		}
+		break;
 		default:			assert(false); return false;
 	}
 }
@@ -56,9 +66,9 @@ void writeValueArray(ValueArray* array, Value value) {
 	array->count++;
 }
 
-static void printObject(Object* object) {
-	switch(object->type) {
-		case OBJECT_STRING: printf("%s", ((ObjectString*)(object))->characters); break;
+static void printObject(Value value) {
+	switch(OBJECT_TYPE(value)) {
+		case OBJECT_STRING: printf("%s", AS_CSTRING(value)); break;
 	}
 }
 
@@ -67,7 +77,7 @@ void printValue(Value value) {
 		case VALUE_BOOLEAN:	printf(AS_BOOLEAN(value) ? "true" : "false");	break;
 		case VALUE_NIL:		printf("nil");									break;
 		case VALUE_NUMBER:	printf("%g", AS_NUMBER(value));					break;
-		case VALUE_OBJECT:	printObject(AS_OBJECT(value));					break;
+		case VALUE_OBJECT:	printObject(value);								break;
 	}
 
 }

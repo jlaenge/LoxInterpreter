@@ -1,6 +1,7 @@
 #include <value.h>
 
 #include <memory.h>
+#include <object.h>
 
 #include <stdio.h>
 
@@ -55,11 +56,18 @@ void writeValueArray(ValueArray* array, Value value) {
 	array->count++;
 }
 
+static void printObject(Object* object) {
+	switch(object->type) {
+		case OBJECT_STRING: printf("%s", ((ObjectString*)(object))->characters); break;
+	}
+}
+
 void printValue(Value value) {
 	switch(value.type) {
 		case VALUE_BOOLEAN:	printf(AS_BOOLEAN(value) ? "true" : "false");	break;
 		case VALUE_NIL:		printf("nil");									break;
 		case VALUE_NUMBER:	printf("%g", AS_NUMBER(value));					break;
+		case VALUE_OBJECT:	printObject(AS_OBJECT(value));					break;
 	}
 
 }

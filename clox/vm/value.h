@@ -7,8 +7,12 @@ typedef enum ValueType_tag ValueType;
 enum ValueType_tag {
 	VALUE_BOOLEAN,
 	VALUE_NIL,
-	VALUE_NUMBER
+	VALUE_NUMBER,
+	VALUE_OBJECT
 };
+
+typedef struct Object_tag Object;
+typedef struct ObjectString_tag ObjectString;
 
 typedef struct Value_tag Value;
 struct Value_tag {
@@ -16,19 +20,23 @@ struct Value_tag {
 	union {
 		bool boolean;
 		double number;
+		Object* object;
 	} as;
 };
 
 #define BOOLEAN_VALUE(value) ((Value){ VALUE_BOOLEAN, { .boolean = value } })
 #define NIL_VALUE			 ((Value){ VALUE_NIL })
 #define NUMBER_VALUE(value)	 ((Value){ VALUE_NUMBER, { .number = value } })
+#define OBJECT_VALUE(value)  ((Value){ VALUE_OBJECT, { .object = (*Object)value } })
 
 #define IS_BOOLEAN(value) ((value).type == VALUE_BOOLEAN)
 #define IS_NIL(value)	  ((value).type == VALUE_NIL)
 #define IS_NUMBER(value)  ((value).type == VALUE_NUMBER)
+#define IS_OBJECT(value)  ((value).type == VALUE_OBJECT)
 
 #define AS_BOOLEAN(value) ((value).as.boolean)
 #define AS_NUMBER(value)  ((value).as.number)
+#define AS_OBJECT(value)  ((value).as.object)
 
 typedef struct ValueArray_tag ValueArray;
 struct ValueArray_tag {

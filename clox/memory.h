@@ -3,6 +3,9 @@
 
 #include <common.h>
 
+#define ALLOCATE(type, count) \
+	(type*)reallocate(NULL, 0, sizeof(type) * count)
+
 /*
  * reallocates the size of the memory chunk pointed to by
  * pointer from a chunk of oldSize to one of newSize

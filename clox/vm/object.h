@@ -12,7 +12,6 @@
 
 #define AS_CSTRING(value) ( ((ObjectString*)AS_STRING(value))->characters )
 
-
 typedef enum ObjectType_tag ObjectType;
 enum ObjectType_tag {
 	OBJECT_STRING
@@ -27,6 +26,8 @@ struct ObjectString_tag {
 	int length;
 	char* characters;
 };
+
+ObjectString* copyString(const char* characters, int length);
 
 static inline bool isObjectType(Value value, ObjectType type) {
 	return (IS_OBJECT(value) && OBJECT_TYPE(value) == type);

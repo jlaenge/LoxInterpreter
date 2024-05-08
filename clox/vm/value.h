@@ -27,7 +27,7 @@ struct Value_tag {
 #define BOOLEAN_VALUE(value) ((Value){ VALUE_BOOLEAN, { .boolean = value } })
 #define NIL_VALUE			 ((Value){ VALUE_NIL })
 #define NUMBER_VALUE(value)	 ((Value){ VALUE_NUMBER, { .number = value } })
-#define OBJECT_VALUE(value)  ((Value){ VALUE_OBJECT, { .object = (*Object)value } })
+#define OBJECT_VALUE(value)  ((Value){ VALUE_OBJECT, { .object = (Object*)value } })
 
 #define IS_BOOLEAN(value) ((value).type == VALUE_BOOLEAN)
 #define IS_NIL(value)	  ((value).type == VALUE_NIL)

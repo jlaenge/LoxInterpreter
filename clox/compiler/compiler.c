@@ -1,5 +1,6 @@
 #include <compiler.h>
 
+#include <object.h>
 #include <scanner.h>
 #include <value.h>
 
@@ -234,6 +235,10 @@ static void number() {
 	double value = strtod(parser.previous.start, NULL);
 	emitConstant(NUMBER_VALUE(value));
 }
+static void string() {
+	ObjectString* objectString = copyString(parser.previous.start + 1, parser.previous.length - 2);
+	emitConstant(OBJECT_VALUE(objectString));
+}
 
 static void initParser() {
 	parser.hasError = false;
@@ -276,7 +281,7 @@ ParseRule rules[] = {
 	[TOKEN_GREATER] 		   		= { NULL, 		binary,	PRECEDENCE_COMPARISON	},
 	[TOKEN_GREATER_EQUAL]			= { NULL, 		binary,	PRECEDENCE_COMPARISON	},
 	[TOKEN_IDENTIFIER] 	   			= { NULL, 		NULL, 	PRECEDENCE_NONE 		},
-	[TOKEN_STRING] 					= { NULL, 		NULL, 	PRECEDENCE_NONE 		},
+	[TOKEN_STRING] 					= { string,		NULL, 	PRECEDENCE_NONE 		},
 	[TOKEN_NUMBER]					= { number, 	NULL, 	PRECEDENCE_NONE 		},
 	[TOKEN_CLASS] 				   	= { NULL, 		NULL, 	PRECEDENCE_NONE 		},
 	[TOKEN_SUPER] 					= { NULL, 		NULL, 	PRECEDENCE_NONE 		},

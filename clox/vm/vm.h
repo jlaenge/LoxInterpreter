@@ -29,5 +29,6 @@ void push(Value value);
 Value pop();
 Value peek(int distance);
 bool isFalsey(Value value);
+void concatenate();
 
 #endif

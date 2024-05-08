@@ -27,3 +27,6 @@ ObjectString* copyString(const char* characters, int length) {
 
 	return allocateString(heapMemory, length);
 }
+ObjectString* takeString(char* characters, int length) {
+	return allocateString(characters, length);
+}

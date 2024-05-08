@@ -28,6 +28,7 @@ struct ObjectString_tag {
 };
 
 ObjectString* copyString(const char* characters, int length);
+ObjectString* takeString(char* characters, int length);
 
 static inline bool isObjectType(Value value, ObjectType type) {
 	return (IS_OBJECT(value) && OBJECT_TYPE(value) == type);

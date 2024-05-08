@@ -2,9 +2,11 @@
 
 #include <compiler.h>
 #include <debug.h>
+#include <object.h>
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <string.h>
 
 VM vm;
 
@@ -88,7 +90,20 @@ static InterpretResult run() {
 				}
 				push(NUMBER_VALUE(-AS_NUMBER(pop())));
 				break;
-			case OP_ADD:		BINARY_OP(NUMBER_VALUE, +);				break;
+			case OP_ADD: {
+				Value right = peek(0);
+				Value left = peek(1);
+				if(IS_STRING(left) && IS_STRING(right)) {
+					concatenate();
+				} else if(IS_NUMBER(left) && IS_NUMBER(right)) {
+					BINARY_OP(NUMBER_VALUE, +);
+				} else {
+					runtimeError("Operands must both be strings or both be numbers");
+					return INTERPRET_RUNTIME_ERROR;
+				}
+
+			}
+			break;
 			case OP_SUBTRACT:	BINARY_OP(NUMBER_VALUE, -);				break;
 			case OP_MULTIPLY:	BINARY_OP(NUMBER_VALUE, *);				break;
 			case OP_DIVIDE:		BINARY_OP(NUMBER_VALUE, /);				break;
@@ -148,4 +163,15 @@ Value peek(int distance) {
 }
 bool isFalsey(Value value) {
 	return IS_NIL(value) || (IS_BOOLEAN(value) && !AS_BOOLEAN(value));
+}
+void concatenate() {
+	ObjectString* right = AS_STRING(pop());
+	ObjectString* left = AS_STRING(pop());
+	int length = left->length + right->length;
+	char* characters = ALLOCATE(char, length + 1);
+	memcpy(characters, left->characters, left->length);
+	memcpy(characters + left->length, right->characters, right->length);
+	characters[length] = '\0';
+	ObjectString* objectString = takeString(characters, length);
+	push(OBJECT_VALUE(objectString));
 }

@@ -13,7 +13,11 @@ struct VM_tag {
 	uint8_t* ip;
 	Value stack[STACK_MAX];
 	Value* stackTop;
+
+	Object* objects;
 };
+
+extern VM vm;
 
 typedef enum InterpretResult_tag InterpretResult;
 enum InterpretResult_tag {

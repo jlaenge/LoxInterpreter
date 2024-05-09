@@ -19,6 +19,7 @@ enum ObjectType_tag {
 
 struct Object_tag {
 	ObjectType type;
+	Object* next;
 };
 
 struct ObjectString_tag {

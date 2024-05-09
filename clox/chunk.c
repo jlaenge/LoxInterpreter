@@ -14,8 +14,8 @@ void initChunk(Chunk* chunk) {
 }
 void freeChunk(Chunk* chunk) {
 	assert(chunk != NULL);
-	reallocate(chunk->code, chunk->capacity * sizeof(uint8_t), 0);
-	reallocate(chunk->lines, chunk->capacity * sizeof(uint8_t), 0);
+	FREE_ARRAY(uint8_t, chunk->code, chunk->capacity);
+	FREE_ARRAY(int, chunk->lines, chunk->capacity);
 	freeValueArray(&chunk->constants);
 	initChunk(chunk);
 }

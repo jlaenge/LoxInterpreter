@@ -35,7 +35,7 @@ void initValueArray(ValueArray* array) {
 }
 void freeValueArray(ValueArray* array) {
 	assert(array != NULL);
-	reallocate(array->values, array->capacity * sizeof(Value), 0);
+	FREE_ARRAY(Value, array->values, array->capacity);
 	initValueArray(array);
 }
 

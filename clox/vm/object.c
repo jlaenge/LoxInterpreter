@@ -1,6 +1,7 @@
 #include <object.h>
 
 #include <memory.h>
+#include <vm.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -11,6 +12,10 @@
 static Object* allocateObject(size_t size, ObjectType type) {
 	Object* object = (Object*)reallocate(NULL, 0, size);
 	object->type = type;
+
+	object->next = vm.objects;
+	vm.objects = object;
+
 	return object;
 }
 static ObjectString* allocateString(char* characters, int length) {

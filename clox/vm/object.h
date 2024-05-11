@@ -26,6 +26,7 @@ struct ObjectString_tag {
 	Object object;
 	int length;
 	char* characters;
+	uint32_t hash;
 };
 
 ObjectString* copyString(const char* characters, int length);

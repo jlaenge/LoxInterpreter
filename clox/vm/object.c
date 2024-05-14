@@ -1,6 +1,7 @@
 #include <object.h>
 
 #include <memory.h>
+#include <table.h>
 #include <vm.h>
 
 #include <stdio.h>
@@ -38,13 +39,31 @@ static uint32_t hashString(const char* characters, int length) {
 }
 
 ObjectString* copyString(const char* characters, int length) {
+	assert(characters != NULL);
+
 	char* heapMemory = ALLOCATE(char, length + 1);
 	memcpy(heapMemory, characters, length);
 	heapMemory[length] = '\0';
+
 	uint32_t hash = hashString(characters, length);
-	return allocateString(heapMemory, length, hash);
+	ObjectString* interned = tableFindString(&vm.strings, characters, length, hash);
+
+	if(interned != NULL) {
+		return interned;
+	} else {
+		return allocateString(heapMemory, length, hash);
+	}
 }
 ObjectString* takeString(char* characters, int length) {
+	assert(characters != NULL);
+
 	uint32_t hash = hashString(characters, length);
+	ObjectString* interned = tableFindString(&vm.strings, characters, length, hash);
+
+	if(interned != NULL) {
+		FREE_ARRAY(char, characters, length+1);
+		return interned;
+	}
+
 	return allocateString(characters, length, hash);
 }

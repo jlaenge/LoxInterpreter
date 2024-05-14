@@ -15,15 +15,7 @@ bool valuesEqual(Value a, Value b) {
 		case VALUE_BOOLEAN:	return (AS_BOOLEAN(a) == AS_BOOLEAN(b));
 		case VALUE_NIL:		return true;
 		case VALUE_NUMBER:	return (AS_NUMBER(a) == AS_NUMBER(b));
-		case VALUE_OBJECT: {
-			ObjectString* left = AS_STRING(a);
-			ObjectString* right = AS_STRING(b);
-			return (
-				(left->length == right->length) &&
-				memcmp(left->characters, right->characters, (size_t)left->length) == 0
-			);
-		}
-		break;
+		case VALUE_OBJECT: 	return (AS_OBJECT(a) == AS_OBJECT(b));
 		default:			assert(false); return false;
 	}
 }

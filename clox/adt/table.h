@@ -7,7 +7,7 @@
 typedef struct Entry_tag Entry;
 struct Entry_tag {
 	ObjectString* key;
-	Value* value;
+	Value value;
 };
 
 typedef struct Table_tag Table;
@@ -19,5 +19,10 @@ struct Table_tag {
 
 void initTable(Table* table);
 void freeTable(Table* table);
+
+bool tableGet(Table* table, ObjectString* key, Value* value);
+bool tableSet(Table* table, ObjectString* key, Value value);
+bool tableDelete(Table* table, ObjectString* key);
+void tableAddAll(Table* from, Table* to);
 
 #endif

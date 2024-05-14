@@ -20,30 +20,14 @@ void freeChunk(Chunk* chunk) {
 	initChunk(chunk);
 }
 
-static void growChunk(Chunk* chunk) {
-	assert(chunk != NULL);
-
-	// start fresh chunk
-	if(chunk->capacity == 0) {
-		chunk->capacity = MIN_CHUNK_SIZE;
-		chunk->code = reallocate(chunk->code, 0, chunk->capacity * sizeof(uint8_t));
-		chunk->lines = reallocate(chunk->lines, 0, chunk->capacity * sizeof(int));
-	}
-	// grow old chunk
-	else {
-		int old_capacity = chunk->capacity;
-		chunk->capacity <<= 1;
-		chunk->code = reallocate(chunk->code, old_capacity * sizeof(uint8_t), chunk->capacity * sizeof(uint8_t));
-		chunk->lines = reallocate(chunk->lines, old_capacity * sizeof(uint8_t), chunk->capacity * sizeof(uint8_t));
-	}
-
-}
 void writeChunk(Chunk* chunk, uint8_t byte, int line) {
 	assert(chunk != NULL);
 
 	// allocate more memory, if necessary
 	if(chunk->capacity <= chunk->count) {
-		growChunk(chunk);
+		int oldCapacity = chunk->capacity;
+		chunk->capacity = GROW_CAPACITY(chunk->capacity);
+		chunk->code = GROW_ARRAY(uint8_t, chunk->code, oldCapacity, chunk->capacity);
 	}
 
 	// write new chunk

@@ -39,27 +39,13 @@ void freeValueArray(ValueArray* array) {
 	initValueArray(array);
 }
 
-static void growArray(ValueArray* array) {
-	assert(array != NULL);
-
-	// start fresh array
-	if(array->capacity == 0) {
-		array->capacity = MIN_ARRAY_SIZE;
-		array->values = reallocate(array->values, 0, array->capacity * sizeof(Value));
-	}
-	// grow old array
-	else {
-		int old_capacity = array->capacity;
-		array->capacity <<= 1;
-		array->values = reallocate(array->values, old_capacity * sizeof(Value), array->capacity * sizeof(Value));
-	}
-
-}
 void writeValueArray(ValueArray* array, Value value) {
 	assert(array != NULL);
 
 	if(array->capacity <= array->count) {
-		growArray(array);
+		int oldCapacity = array->capacity;
+		array->capacity = GROW_CAPACITY(array->capacity);
+		array->values = GROW_ARRAY(Value, array->values, oldCapacity, array->capacity);
 	}
 
 	array->values[array->count] = value;

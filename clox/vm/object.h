@@ -17,11 +17,13 @@ enum ObjectType_tag {
 	OBJECT_STRING
 };
 
+typedef struct Object_tag Object;
 struct Object_tag {
 	ObjectType type;
 	Object* next;
 };
 
+typedef struct ObjectString_tag ObjectString;
 struct ObjectString_tag {
 	Object object;
 	int length;

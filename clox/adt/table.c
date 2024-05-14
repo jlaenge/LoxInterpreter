@@ -23,13 +23,22 @@ static Entry* findEntry(Entry* entries, int capacity, ObjectString* key) {
 	assert(key != NULL);
 
 	uint32_t index = key->hash % capacity;
-	Entry* entry = NULL;
-	do {
-		entry = &entries[index];
-		index = (index + 1) % capacity;
-	} while(entry->key != NULL && entry->key != key);
+	Entry* tombstone = NULL;
+	while(true) {
+		Entry* entry = &entries[index];
 
-	return entry;
+		if(entry->key == NULL) {
+			if(IS_NIL(entry->value)) {
+				return tombstone != NULL ? tombstone : entry;
+			} else {
+				if(tombstone == NULL) tombstone = entry;
+			}
+		} else if(entry->key == key) {
+			return entry;
+		}
+
+		index = (index + 1) % capacity;
+	}
 }
 static void adjustCapacity(Table* table, int capacity) {
 
@@ -42,6 +51,7 @@ static void adjustCapacity(Table* table, int capacity) {
 	}
 
 	// copy existing entries
+	table->count = 0;
 	for(int i=0; i<table->capacity; i++) {
 		Entry* entry = &table->entries[i];
 		if(entry->key == NULL) continue;
@@ -49,6 +59,7 @@ static void adjustCapacity(Table* table, int capacity) {
 		Entry* destination = findEntry(entries, capacity, entry->key);
 		destination->key = entry->key;
 		destination->value = entry->value;
+		table->count++;
 	}
 
 	// delete old entries
@@ -85,7 +96,7 @@ bool tableSet(Table* table, ObjectString* key, Value value) {
 
 	Entry* entry = findEntry(table->entries, table->capacity, key);
 	bool isNewKey = (entry->key == NULL);
-	if(isNewKey) table->count++;
+	if(isNewKey && IS_NIL(entry->value)) table->count++;
 
 	entry->key = key;
 	entry->value = value;
@@ -96,6 +107,15 @@ bool tableDelete(Table* table, ObjectString* key) {
 	assert(table != NULL);
 	assert(key != NULL);
 
+	if(table->count == 0) return false;
+
+	Entry* entry = findEntry(table->entries, table->capacity, key);
+	if(entry->key != key) return false;
+
+	entry->key = NULL;
+	entry->value = BOOLEAN_VALUE(true);	// any value other than NIL will do
+
+	return true;
 }
 void tableAddAll(Table* from, Table* to) {
 

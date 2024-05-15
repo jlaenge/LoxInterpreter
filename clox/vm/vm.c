@@ -2,6 +2,7 @@
 
 #include <compiler.h>
 #include <debug.h>
+#include <memory.h>
 #include <object.h>
 
 #include <stdarg.h>

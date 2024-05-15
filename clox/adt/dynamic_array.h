@@ -16,5 +16,6 @@ void initDynamicArray(DynamicArray* array, size_t entrySize);
 void freeDynamicArray(DynamicArray* array);
 
 void dynamicArrayAppend(DynamicArray* array, void* value);
+void* dynamicArrayGet(DynamicArray* array, int index);
 
 #endif

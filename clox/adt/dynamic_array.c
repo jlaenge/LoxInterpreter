@@ -38,7 +38,14 @@ void dynamicArrayAppend(DynamicArray* array, void* value) {
 	}
 
 	// write new chunk
-	void* start = array->memory + (array->entrySize * array->count);
-	memcpy(start, value, array->entrySize);
+	void* memory = dynamicArrayGet(array, array->count);
+	memcpy(memory, value, array->entrySize);
 	array->count++;
+}
+void* dynamicArrayGet(DynamicArray* array, int index) {
+	assert(array != NULL);
+	assert(0 <= index);
+	assert(index < array->capacity);
+
+	return array->memory + (array->entrySize * index);
 }

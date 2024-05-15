@@ -2,6 +2,7 @@
 #define CLOX_CHUNK_H_
 
 #include <common.h>
+#include <dynamic_array.h>
 #include <value.h>
 
 typedef enum OpCode_tag OpCode;
@@ -39,9 +40,9 @@ enum OpCode_tag {
  */
 typedef struct Chunk_tag Chunk;
 struct Chunk_tag {
+	DynamicArray code;
 	int count;
 	int capacity;
-	uint8_t* code;
 	int* lines;
 	ValueArray constants;
 };

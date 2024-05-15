@@ -21,7 +21,7 @@ static void runtimeError(const char* format, ...) {
 	va_end(args);
 	fputs("\n", stderr);
 
-	size_t instruction = vm.ip - vm.chunk->code - 1;
+	size_t instruction = (void*)vm.ip - (void*)vm.chunk->code.memory - 1;
 	int line = vm.chunk->lines[instruction];
 	fprintf(stderr, "[line %d] in script\n", line);
 
@@ -67,7 +67,7 @@ static InterpretResult run() {
 
 #ifdef DEBUG_TRACE_EXECUTION
 		printStack();
-		disassembleInstruction(vm.chunk, (int)(vm.ip - vm.chunk->code));
+		disassembleInstruction(vm.chunk, (int)((void*)vm.ip - (void*)vm.chunk->code.memory));
 #endif
 
 		uint8_t instruction = READ_BYTE();
@@ -147,7 +147,7 @@ InterpretResult interpret(const char* source) {
 	}
 
 	vm.chunk = &chunk;
-	vm.ip = chunk.code;
+	vm.ip = (uint8_t*)chunk.code.memory;
 
 	InterpretResult result = run();
 	freeChunk(&chunk);

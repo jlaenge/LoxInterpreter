@@ -17,5 +17,6 @@ void freeDynamicArray(DynamicArray* array);
 
 void dynamicArrayAppend(DynamicArray* array, void* value);
 void* dynamicArrayGet(DynamicArray* array, int index);
+bool dynamicArrayIndexInRange(DynamicArray* array, int index);
 
 #endif

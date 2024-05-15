@@ -38,14 +38,21 @@ void dynamicArrayAppend(DynamicArray* array, void* value) {
 	}
 
 	// write new chunk
-	void* memory = dynamicArrayGet(array, array->count);
+	void* memory = array->memory + (array->entrySize * array->count);
 	memcpy(memory, value, array->entrySize);
 	array->count++;
 }
 void* dynamicArrayGet(DynamicArray* array, int index) {
 	assert(array != NULL);
 	assert(0 <= index);
-	assert(index < array->capacity);
+	if(index >= array->count) {
+		index--;
+	}
+	//assert(index < array->count);
 
 	return array->memory + (array->entrySize * index);
+}
+bool dynamicArrayIndexInRange(DynamicArray* array, int index) {
+	assert(array != NULL);
+	return (0 <= index && index < array->count);
 }

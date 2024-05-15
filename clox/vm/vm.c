@@ -22,7 +22,7 @@ static void runtimeError(const char* format, ...) {
 	fputs("\n", stderr);
 
 	size_t instruction = (void*)vm.ip - (void*)vm.chunk->code.memory - 1;
-	int line = vm.chunk->lines[instruction];
+	int line = *((int*)dynamicArrayGet(&vm.chunk->lines, instruction));
 	fprintf(stderr, "[line %d] in script\n", line);
 
 	resetStack();

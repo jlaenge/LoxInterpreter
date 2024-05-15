@@ -10,7 +10,7 @@ void disassembleChunk(Chunk* chunk, const char* name) {
 
 	printf("== %s ==\n", name);
 	int offset = 0;
-	while(offset < chunk->count) {
+	while(dynamicArrayIndexInRange(&chunk->code, offset)) {
 		offset = disassembleInstruction(chunk, offset);
 	}
 
@@ -34,11 +34,19 @@ int disassembleInstruction(Chunk* chunk, int offset) {
 
 	printf("%04d ", offset);
 
-	if(offset > 0 && chunk->lines[offset] == chunk->lines[offset-1]) {
-		printf("   | ");
+	int currentLine = *((int*)dynamicArrayGet(&chunk->lines, offset));
+	if(offset > 0) {
+		int previousLine = *((int*)dynamicArrayGet(&chunk->lines, offset-1));
+
+		if(offset > 0 && currentLine == previousLine) {
+			printf("   | ");
+		} else {
+			printf("%4d ", currentLine);
+		}
 	} else {
-		printf("%4d ", chunk->lines[offset]);
+		printf("%4d ", currentLine);
 	}
+
 
 	uint8_t instruction = *((uint8_t*)dynamicArrayGet(&chunk->code, offset));
 	switch(instruction) {

@@ -41,9 +41,7 @@ enum OpCode_tag {
 typedef struct Chunk_tag Chunk;
 struct Chunk_tag {
 	DynamicArray code;
-	int count;
-	int capacity;
-	int* lines;
+	DynamicArray lines;
 	ValueArray constants;
 };
 

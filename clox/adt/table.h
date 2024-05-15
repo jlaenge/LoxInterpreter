@@ -2,7 +2,7 @@
 #define CLOX_ADT_TABLE_H_
 
 #include <common.h>
-#include <dynamic_array.h>
+#include <dynarray.h>
 #include <value.h>
 
 typedef struct Entry_tag Entry;

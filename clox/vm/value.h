@@ -3,7 +3,7 @@
 
 #include <common.h>
 
-#include <dynamic_array.h>
+#include <dynarray.h>
 
 typedef enum ValueType_tag ValueType;
 enum ValueType_tag {

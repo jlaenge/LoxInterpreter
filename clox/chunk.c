@@ -24,8 +24,8 @@ void freeChunk(Chunk* chunk) {
 void writeChunk(Chunk* chunk, uint8_t byte, int line) {
 	assert(chunk != NULL);
 
-	dynamicArrayAppend(&chunk->code, &byte);
-	dynamicArrayAppend(&chunk->lines, &line);
+	dynarrayAppend(&chunk->code, &byte);
+	dynarrayAppend(&chunk->lines, &line);
 }
 
 int addConstant(Chunk* chunk, Value value) {

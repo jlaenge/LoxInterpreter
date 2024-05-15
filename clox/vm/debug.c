@@ -10,7 +10,7 @@ void disassembleChunk(Chunk* chunk, const char* name) {
 
 	printf("== %s ==\n", name);
 	int offset = 0;
-	while(dynamicArrayIndexInRange(&chunk->code, offset)) {
+	while(dynarrayInRange(&chunk->code, offset)) {
 		offset = disassembleInstruction(chunk, offset);
 	}
 
@@ -18,9 +18,9 @@ void disassembleChunk(Chunk* chunk, const char* name) {
 
 static int constantInstruction(const char* name, Chunk* chunk, int offset) {
 	assert(chunk != NULL);
-	uint8_t constant = *((uint8_t*)dynamicArrayGet(&chunk->code, offset+1));
+	uint8_t constant = *((uint8_t*)dynarrayGet(&chunk->code, offset+1));
 	printf("%-16s %4d '", name, constant);
-	Value value = *((Value*)dynamicArrayGet(&chunk->constants, constant));
+	Value value = *((Value*)dynarrayGet(&chunk->constants, constant));
 	printValue(value);
 	printf("'\n");
 	return offset + 2;
@@ -35,9 +35,9 @@ int disassembleInstruction(Chunk* chunk, int offset) {
 
 	printf("%04d ", offset);
 
-	int currentLine = *((int*)dynamicArrayGet(&chunk->lines, offset));
+	int currentLine = *((int*)dynarrayGet(&chunk->lines, offset));
 	if(offset > 0) {
-		int previousLine = *((int*)dynamicArrayGet(&chunk->lines, offset-1));
+		int previousLine = *((int*)dynarrayGet(&chunk->lines, offset-1));
 
 		if(offset > 0 && currentLine == previousLine) {
 			printf("   | ");
@@ -49,7 +49,7 @@ int disassembleInstruction(Chunk* chunk, int offset) {
 	}
 
 
-	uint8_t instruction = *((uint8_t*)dynamicArrayGet(&chunk->code, offset));
+	uint8_t instruction = *((uint8_t*)dynarrayGet(&chunk->code, offset));
 	switch(instruction) {
 
 		// values

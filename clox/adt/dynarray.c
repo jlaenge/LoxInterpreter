@@ -1,5 +1,5 @@
-#include <dynamic_array.h>
-#include <dynamic_array_internal.h>
+#include <dynarray.h>
+#include <dynarray_internal.h>
 
 #include <memory.h>
 
@@ -20,7 +20,7 @@ void freeDynamicArray(DynamicArray* array) {
 	initDynamicArray(array, array->entrySize);
 }
 
-void dynamicArrayAppend(DynamicArray* array, void* value) {
+void dynarrayAppend(DynamicArray* array, void* value) {
 	assert(array != NULL);
 
 	// allocate more memory, if necessary
@@ -35,14 +35,14 @@ void dynamicArrayAppend(DynamicArray* array, void* value) {
 	memcpy(memory, value, array->entrySize);
 	array->count++;
 }
-void* dynamicArrayGet(DynamicArray* array, int index) {
+void* dynarrayGet(DynamicArray* array, int index) {
 	assert(array != NULL);
 	assert(0 <= index);
 	assert(index < array->capacity);
 
 	return array->memory + (array->entrySize * index);
 }
-bool dynamicArrayIndexInRange(DynamicArray* array, int index) {
+bool dynarrayInRange(DynamicArray* array, int index) {
 	assert(array != NULL);
 	return (0 <= index && index < array->count);
 }

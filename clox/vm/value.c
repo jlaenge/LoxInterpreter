@@ -32,7 +32,7 @@ void freeValueArray(ValueArray* array) {
 void writeValueArray(ValueArray* array, Value value) {
 	assert(array != NULL);
 
-	dynamicArrayAppend(array, &value);
+	dynarrayAppend(array, &value);
 }
 
 static void printObject(Value value) {

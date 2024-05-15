@@ -2,7 +2,7 @@
 #define CLOX_CHUNK_H_
 
 #include <common.h>
-#include <dynamic_array.h>
+#include <dynarray.h>
 #include <value.h>
 
 typedef enum OpCode_tag OpCode;

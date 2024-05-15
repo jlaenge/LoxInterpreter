@@ -22,7 +22,7 @@ static void runtimeError(const char* format, ...) {
 	fputs("\n", stderr);
 
 	size_t instruction = (void*)vm.ip - (void*)vm.chunk->code.memory - 1;
-	int line = *((int*)dynamicArrayGet(&vm.chunk->lines, instruction));
+	int line = *((int*)dynarrayGet(&vm.chunk->lines, instruction));
 	fprintf(stderr, "[line %d] in script\n", line);
 
 	resetStack();
@@ -50,8 +50,7 @@ static void printStack() {
 static InterpretResult run() {
 
 #define READ_BYTE() (*vm.ip++)
-//#define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
-#define READ_CONSTANT() (*((Value*)dynamicArrayGet(&vm.chunk->constants, READ_BYTE())))
+#define READ_CONSTANT() (*((Value*)dynarrayGet(&vm.chunk->constants, READ_BYTE())))
 #define BINARY_OP(valueType, operator) \
 	do { \
 		if(!IS_NUMBER(peek(0)) || !IS_NUMBER(peek(1))) { \

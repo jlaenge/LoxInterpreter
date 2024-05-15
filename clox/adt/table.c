@@ -1,6 +1,6 @@
+#include <dynarray_internal.h>
 #include <table.h>
 
-#include <dynamic_array_internal.h>
 #include <memory.h>
 #include <value.h>
 #include <object.h>
@@ -54,7 +54,7 @@ static void adjustCapacity(Table* table, int capacity) {
 	// copy existing entries
 	table->count = 0;
 	for(int i=0; i<table->capacity; i++) {
-		Entry* entry = (Entry*)dynamicArrayGet(table, i);;
+		Entry* entry = (Entry*)dynarrayGet(table, i);;
 		if(entry->key == NULL) continue;
 
 		Entry* destination = findEntry(entries, capacity, entry->key);
@@ -124,7 +124,7 @@ void tableAddAll(Table* from, Table* to) {
 	assert(to != NULL);
 
 	for(int i=0; i<from->capacity; i++) {
-		Entry* entry = (Entry*)dynamicArrayGet(from, i);
+		Entry* entry = (Entry*)dynarrayGet(from, i);
 		if(entry->key != NULL) {
 			tableSet(to, entry->key, entry->value);
 		}
@@ -139,7 +139,7 @@ ObjectString* tableFindString(Table* table, const char* characters, int length, 
 
 	uint32_t index = hash % table->capacity;
 	while(true) {
-		Entry* entry = (Entry*)dynamicArrayGet(table, index);
+		Entry* entry = (Entry*)dynarrayGet(table, index);
 
 		if(entry->key == NULL) {
 			if(IS_NIL(entry->value)) return NULL;

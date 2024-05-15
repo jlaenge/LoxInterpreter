@@ -1,5 +1,5 @@
-#ifndef CLOX_ADT_DYNAMIC_ARRAY_H_
-#define CLOX_ADT_DYNAMIC_ARRAY_H_
+#ifndef CLOX_ADT_DYNARRAY_H_
+#define CLOX_ADT_DYNARRAY_H_
 
 #include <common.h>
 
@@ -14,8 +14,8 @@ struct DynamicArray_tag {
 void initDynamicArray(DynamicArray* array, size_t entrySize);
 void freeDynamicArray(DynamicArray* array);
 
-void dynamicArrayAppend(DynamicArray* array, void* value);
-void* dynamicArrayGet(DynamicArray* array, int index);
-bool dynamicArrayIndexInRange(DynamicArray* array, int index);
+void dynarrayAppend(DynamicArray* array, void* value);
+void* dynarrayGet(DynamicArray* array, int index);
+bool dynarrayInRange(DynamicArray* array, int index);
 
 #endif

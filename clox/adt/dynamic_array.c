@@ -45,10 +45,7 @@ void dynamicArrayAppend(DynamicArray* array, void* value) {
 void* dynamicArrayGet(DynamicArray* array, int index) {
 	assert(array != NULL);
 	assert(0 <= index);
-	if(index >= array->count) {
-		index--;
-	}
-	//assert(index < array->count);
+	assert(index < array->capacity);
 
 	return array->memory + (array->entrySize * index);
 }

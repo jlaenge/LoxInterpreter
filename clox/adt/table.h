@@ -2,6 +2,7 @@
 #define CLOX_ADT_TABLE_H_
 
 #include <common.h>
+#include <dynamic_array.h>
 #include <value.h>
 
 typedef struct Entry_tag Entry;
@@ -10,12 +11,11 @@ struct Entry_tag {
 	Value value;
 };
 
-typedef struct Table_tag Table;
-struct Table_tag {
-	int count;
-	int capacity;
-	Entry* entries;
-};
+// TODO: probably we want to wrap the DynamicArray
+// inside of a struct in case we want to add additional
+// properties to our table. But for now we use the
+// datastructure that is easiest.
+typedef DynamicArray Table;
 
 void initTable(Table* table);
 void freeTable(Table* table);

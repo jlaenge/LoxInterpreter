@@ -10,13 +10,11 @@
 
 void initTable(Table* table) {
 	assert(table != NULL);
-	table->count = 0;
-	table->capacity = 0;
-	table->entries = NULL;
+	initDynamicArray(table, sizeof(Entry));
 }
 void freeTable(Table* table) {
 	assert(table != NULL);
-	FREE_ARRAY(Value, table->entries, table->capacity);
+	freeDynamicArray(table);
 	initTable(table);
 }
 
@@ -55,7 +53,7 @@ static void adjustCapacity(Table* table, int capacity) {
 	// copy existing entries
 	table->count = 0;
 	for(int i=0; i<table->capacity; i++) {
-		Entry* entry = &table->entries[i];
+		Entry* entry = (Entry*)dynamicArrayGet(table, i);;
 		if(entry->key == NULL) continue;
 
 		Entry* destination = findEntry(entries, capacity, entry->key);
@@ -65,10 +63,10 @@ static void adjustCapacity(Table* table, int capacity) {
 	}
 
 	// delete old entries
-	FREE_ARRAY(Entry, table->entries, table->capacity);
+	FREE_ARRAY(Entry, table->memory, table->capacity);
 
 	// set new entries and capacity for table
-	table->entries = entries;
+	table->memory = entries;
 	table->capacity = capacity;
 
 }
@@ -80,7 +78,7 @@ bool tableGet(Table* table, ObjectString* key, Value* value) {
 
 	if(table->capacity == 0) return false;
 
-	Entry* entry = findEntry(table->entries, table->capacity, key);
+	Entry* entry = findEntry(table->memory, table->capacity, key);
 	if(entry->key == NULL) return false;
 
 	*value = entry->value;
@@ -96,7 +94,7 @@ bool tableSet(Table* table, ObjectString* key, Value value) {
 		adjustCapacity(table, table->capacity);
 	}
 
-	Entry* entry = findEntry(table->entries, table->capacity, key);
+	Entry* entry = findEntry(table->memory, table->capacity, key);
 	bool isNewKey = (entry->key == NULL);
 	if(isNewKey && IS_NIL(entry->value)) table->count++;
 
@@ -111,7 +109,7 @@ bool tableDelete(Table* table, ObjectString* key) {
 
 	if(table->count == 0) return false;
 
-	Entry* entry = findEntry(table->entries, table->capacity, key);
+	Entry* entry = findEntry(table->memory, table->capacity, key);
 	if(entry->key != key) return false;
 
 	entry->key = NULL;
@@ -125,7 +123,7 @@ void tableAddAll(Table* from, Table* to) {
 	assert(to != NULL);
 
 	for(int i=0; i<from->capacity; i++) {
-		Entry* entry = &from->entries[i];
+		Entry* entry = (Entry*)dynamicArrayGet(from, i);
 		if(entry->key != NULL) {
 			tableSet(to, entry->key, entry->value);
 		}
@@ -140,7 +138,7 @@ ObjectString* tableFindString(Table* table, const char* characters, int length, 
 
 	uint32_t index = hash % table->capacity;
 	while(true) {
-		Entry* entry = &table->entries[index];
+		Entry* entry = (Entry*)dynamicArrayGet(table, index);
 
 		if(entry->key == NULL) {
 			if(IS_NIL(entry->value)) return NULL;

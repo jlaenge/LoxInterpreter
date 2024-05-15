@@ -21,27 +21,18 @@ bool valuesEqual(Value a, Value b) {
 }
 void initValueArray(ValueArray* array) {
 	assert(array != NULL);
-	array->count = 0;
-	array->capacity = 0;
-	array->values = NULL;
+	initDynamicArray(array, sizeof(Value));
 }
 void freeValueArray(ValueArray* array) {
 	assert(array != NULL);
-	FREE_ARRAY(Value, array->values, array->capacity);
+	freeDynamicArray(array);
 	initValueArray(array);
 }
 
 void writeValueArray(ValueArray* array, Value value) {
 	assert(array != NULL);
 
-	if(array->capacity <= array->count) {
-		int oldCapacity = array->capacity;
-		array->capacity = GROW_CAPACITY(array->capacity);
-		array->values = GROW_ARRAY(Value, array->values, oldCapacity, array->capacity);
-	}
-
-	array->values[array->count] = value;
-	array->count++;
+	dynamicArrayAppend(array, &value);
 }
 
 static void printObject(Value value) {

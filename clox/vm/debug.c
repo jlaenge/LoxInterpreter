@@ -20,7 +20,8 @@ static int constantInstruction(const char* name, Chunk* chunk, int offset) {
 	assert(chunk != NULL);
 	uint8_t constant = *((uint8_t*)dynamicArrayGet(&chunk->code, offset+1));
 	printf("%-16s %4d '", name, constant);
-	printValue(chunk->constants.values[constant]);
+	Value value = *((Value*)dynamicArrayGet(&chunk->constants, constant));
+	printValue(value);
 	printf("'\n");
 	return offset + 2;
 }

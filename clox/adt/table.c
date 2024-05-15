@@ -1,5 +1,6 @@
 #include <table.h>
 
+#include <dynamic_array_internal.h>
 #include <memory.h>
 #include <value.h>
 #include <object.h>
@@ -90,7 +91,7 @@ bool tableSet(Table* table, ObjectString* key, Value value) {
 	// assert(value != NULL); // the value may be NULL
 
 	if(table->count + 1  > table->capacity * TABLE_MAX_LOAD) {
-		table->capacity = GROW_CAPACITY(table->capacity);
+		table->capacity = RESIZE_CAPACITY(table->capacity);
 		adjustCapacity(table, table->capacity);
 	}
 

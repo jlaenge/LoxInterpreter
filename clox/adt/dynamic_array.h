@@ -8,7 +8,6 @@ struct DynamicArray_tag {
 	size_t entrySize;
 	void* memory;
 	int capacity;
-
 	int count;
 };
 

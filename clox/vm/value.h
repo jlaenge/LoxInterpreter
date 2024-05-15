@@ -3,6 +3,8 @@
 
 #include <common.h>
 
+#include <dynamic_array.h>
+
 typedef enum ValueType_tag ValueType;
 enum ValueType_tag {
 	VALUE_BOOLEAN,
@@ -38,12 +40,7 @@ struct Value_tag {
 #define AS_NUMBER(value)  ((value).as.number)
 #define AS_OBJECT(value)  ((value).as.object)
 
-typedef struct ValueArray_tag ValueArray;
-struct ValueArray_tag {
-	int count;
-	int capacity;
-	Value* values;
-};
+typedef DynamicArray ValueArray;
 
 bool valuesEqual(Value a, Value b);
 void initValueArray(ValueArray* array);

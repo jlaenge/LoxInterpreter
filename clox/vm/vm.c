@@ -50,7 +50,8 @@ static void printStack() {
 static InterpretResult run() {
 
 #define READ_BYTE() (*vm.ip++)
-#define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
+//#define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
+#define READ_CONSTANT() (*((Value*)dynamicArrayGet(&vm.chunk->constants, READ_BYTE())))
 #define BINARY_OP(valueType, operator) \
 	do { \
 		if(!IS_NUMBER(peek(0)) || !IS_NUMBER(peek(1))) { \

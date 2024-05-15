@@ -1,16 +1,9 @@
 #include <dynamic_array.h>
+#include <dynamic_array_internal.h>
 
 #include <memory.h>
 
 #include <string.h>
-
-#define MIN_CAPACITY 8
-#define RESIZE_FACTOR 2
-
-#define RESIZE_CAPACITY(capacity) \
-	((capacity < MIN_CAPACITY) ? MIN_CAPACITY : RESIZE_FACTOR*capacity)
-#define RESIZE_MEMORY(entrySize, pointer, oldCount, newCount) \
-	(reallocate(pointer, entrySize*oldCount, entrySize*newCount))
 
 void initDynamicArray(DynamicArray* array, size_t entrySize) {
 	assert(array != NULL);

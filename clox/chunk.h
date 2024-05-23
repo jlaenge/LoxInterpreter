@@ -30,6 +30,7 @@ enum OpCode_tag {
 	OP_NOT,
 
 	// misc
+	OP_PRINT,
 	OP_RETURN
 
 };

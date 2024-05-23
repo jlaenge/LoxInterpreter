@@ -100,7 +100,6 @@ static void advance() {
 		errorAtCurrent(parser.current.start);
 	}
 }
-
 static void consume(TokenType type, const char* message) {
 	if(parser.current.type == type) {
 		advance();
@@ -108,7 +107,14 @@ static void consume(TokenType type, const char* message) {
 		errorAtCurrent(message);
 	}
 }
-
+static bool check(TokenType type) {
+	return (parser.current.type == type);
+}
+static bool match(TokenType type) {
+	if(!check(type)) return false;
+	advance();
+	return true;
+}
 static uint8_t makeConstant(Value value) {
 	int constant = addConstant(currentChunk(), value);
 	if(constant > UINT8_MAX) {
@@ -161,6 +167,11 @@ static void endCompiler() {
  # COMPILE FUNCTIONS
 \**************************************/
 static ParseRule* getRule(TokenType type);
+static void parsePrecedence(Precedence precedence);
+static void expression();
+static void declaration();
+static void statement();
+static void printStatement();
 
 static void parsePrecedence(Precedence precedence) {
 	advance();
@@ -179,10 +190,23 @@ static void parsePrecedence(Precedence precedence) {
 	}
 
 }
-
 static void expression() {
 	parsePrecedence(PRECEDENCE_ASSIGNMENT);
 }
+static void declaration() {
+	statement();
+}
+static void printStatement() {
+	expression();
+	consume(TOKEN_SEMICOLON, "Expected ';' after value.");
+	emitByte(OP_PRINT);
+}
+static void statement() {
+	if(match(TOKEN_PRINT)) {
+		printStatement();
+	}
+}
+
 static void grouping() {
 	expression();
 	consume(TOKEN_RIGHT_PARENTHESIS, "Expected ')' after expression.");
@@ -254,8 +278,12 @@ bool compile(const char* source, Chunk* chunk) {
 	compilingChunk = chunk;
 
 	advance();
-	expression();
-	consume(TOKEN_EOF, "Expected end of expression");
+
+	while(!match(TOKEN_EOF)) {
+		declaration();
+	}
+
+
 	endCompiler();
 	return !parser.hasError;
 }

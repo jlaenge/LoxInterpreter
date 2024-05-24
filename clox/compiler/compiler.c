@@ -168,6 +168,7 @@ static void endCompiler() {
 \**************************************/
 static ParseRule* getRule(TokenType type);
 static void parsePrecedence(Precedence precedence);
+static void synchronize();
 static void expression();
 static void expressionStatement();
 static void declaration();
@@ -191,6 +192,37 @@ static void parsePrecedence(Precedence precedence) {
 	}
 
 }
+static void synchronize() {
+	parser.panicMode = false;
+
+	while(!check(TOKEN_EOF)) {
+
+		// Statement boundary is:
+
+		// 1. Either when the last token was a semicolon (end of statement)
+		if(parser.previous.type == TOKEN_SEMICOLON) return;
+
+		switch(parser.current.type) {
+
+			// 2. Or when we reach a token that would start a new statement (beginning of statement)
+			case TOKEN_CLASS:
+			case TOKEN_FUN:
+			case TOKEN_VAR:
+			case TOKEN_FOR:
+			case TOKEN_IF:
+			case TOKEN_WHILE:
+			case TOKEN_PRINT:
+			case TOKEN_RETURN:
+				return;
+
+			default:
+				advance();
+
+		}
+
+	}
+}
+
 static void expression() {
 	parsePrecedence(PRECEDENCE_ASSIGNMENT);
 }
@@ -201,6 +233,7 @@ static void expressionStatement() {
 }
 static void declaration() {
 	statement();
+	if(parser.panicMode) synchronize();
 }
 static void printStatement() {
 	expression();

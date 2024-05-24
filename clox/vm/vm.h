@@ -6,10 +6,15 @@
 #include <table.h>
 #include <value.h>
 
+#include <stdio.h>
+
 #define STACK_MAX 256
 
 typedef struct VM_tag VM;
 struct VM_tag {
+	FILE* output;
+	FILE* error;
+
 	Chunk* chunk;
 	uint8_t* ip;
 	Value stack[STACK_MAX];
@@ -28,7 +33,7 @@ enum InterpretResult_tag {
 	INTERPRET_RUNTIME_ERROR
 };
 
-void initVM();
+void initVM(FILE* output, FILE* error);
 void freeVM();
 InterpretResult interpret(const char* source);
 void push(Value value);

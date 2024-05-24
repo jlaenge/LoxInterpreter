@@ -28,7 +28,9 @@ static void runtimeError(const char* format, ...) {
 	resetStack();
 }
 
-void initVM() {
+void initVM(FILE* output, FILE* error) {
+	vm.output = output;
+	vm.error = error;
 	resetStack();
 	vm.objects = NULL;
 	initTable(&vm.strings);

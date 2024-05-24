@@ -5,6 +5,8 @@
 #include <common.h>
 #include <chunk.h>
 #include <debug.h>
+#include <sourcefile.h>
+#include <test.h>
 #include <vm.h>
 
 #define LINE_BUFFER_SIZE 1024
@@ -19,16 +21,13 @@ void repl();
  */
 void runFile(const char* path);
 
-/**
- * Reads file at given path and returns it's content in a buffer.
- * ATTENTION: Caller is responsible of freeing the returned buffer.
- */
-char* readFile(const char* path);
-
 int main(int argc, char* argv[]) {
 
+	// run testsuite
+	test_all();
+
 	// spin up VM
-	initVM();
+	initVM(stdout, stderr);
 
 	// evaluate repl or program
 	if(argc == 1) {
@@ -71,7 +70,7 @@ void repl() {
 
 void runFile(const char* path) {
 
-	char* source = readFile(path);
+	char* source = util_readFile(path);
 	InterpretResult result = interpret(source);
 	free(source);
 
@@ -80,36 +79,3 @@ void runFile(const char* path) {
 
 }
 
-char* readFile(const char* path) {
-
-	// open file
-	FILE* file = fopen(path, "rb");
-	if(file == NULL) {
-		fprintf(stderr, "Could not open file \"%s\".\n", path);
-		exit(74);
-	}
-
-	// determin file size
-	fseek(file, 0L, SEEK_END);
-	size_t fileSize = ftell(file);
-	rewind(file);
-
-	// allocate memory
-	char* buffer = (char*)malloc(fileSize + 1);
-	if(buffer == NULL) {
-		fprintf(stderr, "Not enough memory to read \"%s\".\n", path);
-		exit(74);
-	}
-
-	// read file
-	size_t bytesRead = fread(buffer, sizeof(char), fileSize, file);
-	if(bytesRead < fileSize) {
-		fprintf(stderr, "Failed to read \"%s\".\n", path);
-	}
-	buffer[bytesRead] = '\0';
-
-	// close file & return buffer
-	fclose(file);
-	return buffer;
-
-}

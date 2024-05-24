@@ -116,6 +116,9 @@ static InterpretResult run() {
 			case OP_NOT:		push(BOOLEAN_VALUE(isFalsey(pop())));	break;
 
 			// misc
+			case OP_POP:
+				pop();
+				break;
 			case OP_PRINT:
 				printValue(pop());
 				printf("\n");

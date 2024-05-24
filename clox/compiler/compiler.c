@@ -169,6 +169,7 @@ static void endCompiler() {
 static ParseRule* getRule(TokenType type);
 static void parsePrecedence(Precedence precedence);
 static void expression();
+static void expressionStatement();
 static void declaration();
 static void statement();
 static void printStatement();
@@ -193,6 +194,11 @@ static void parsePrecedence(Precedence precedence) {
 static void expression() {
 	parsePrecedence(PRECEDENCE_ASSIGNMENT);
 }
+static void expressionStatement() {
+	expression();
+	consume(TOKEN_SEMICOLON, "Expected ';' after expression.");
+	emitByte(OP_POP);
+}
 static void declaration() {
 	statement();
 }
@@ -204,6 +210,8 @@ static void printStatement() {
 static void statement() {
 	if(match(TOKEN_PRINT)) {
 		printStatement();
+	} else {
+		expressionStatement();
 	}
 }
 

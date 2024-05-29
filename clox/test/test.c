@@ -9,9 +9,9 @@
 #define OUTPUT_FILE "test_output.tmp"
 #define ERROR_FILE  "test_error.tmp"
 
-static void printName(DirectoryEntry* entry) {
+static void printName(struct dirent* entry) {
 
-	printf("Name: %s\n", entry->name);
+	printf("Name: %s\n", entry->d_name);
 
 }
 

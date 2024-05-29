@@ -3,15 +3,9 @@
 
 #include <common.h>
 
-#define MAX_FILENAME_LEN 64
+#include <dirent.h>
 
-typedef struct DirectoryEntry_tag DirectoryEntry;
-struct DirectoryEntry_tag {
-	long inodeNumber;
-	char name[MAX_FILENAME_LEN];
-};
-
-typedef void(*DirwalkCallback)(DirectoryEntry*);
+typedef void(*DirwalkCallback)(struct dirent*);
 
 void dirwalk_walk(const char* path, DirwalkCallback callback);
 

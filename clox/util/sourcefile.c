@@ -1,9 +1,11 @@
 #include <sourcefile.h>
 
+#include <vm.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 
-char* util_readFile(const char* path) {
+static char* readFile(const char* path) {
 
 	// open file
 	FILE* file = fopen(path, "rb");
@@ -34,5 +36,16 @@ char* util_readFile(const char* path) {
 	// close file & return buffer
 	fclose(file);
 	return buffer;
+
+}
+
+void sourcefile_run(const char* path) {
+
+	char* source = readFile(path);
+	InterpretResult result = interpret(source);
+	free(source);
+
+	if(result == INTERPRET_COMPILE_ERROR) exit(65);
+	if(result == INTERPRET_RUNTIME_ERROR) exit(70);
 
 }

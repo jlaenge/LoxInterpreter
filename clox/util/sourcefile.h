@@ -3,10 +3,6 @@
 
 #include <common.h>
 
-/**
- * Reads file at given path and returns it's content in a buffer.
- * ATTENTION: Caller is responsible of freeing the returned buffer.
- */
-char* util_readFile(const char* path);
+void sourcefile_run();
 
-#endif /* CLOX_UTIL_SOURCEFILE_H_ */
+#endif

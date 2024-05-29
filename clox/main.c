@@ -16,11 +16,6 @@
  */
 void repl();
 
-/**
- * Runs file at given path
- */
-void runFile(const char* path);
-
 int main(int argc, char* argv[]) {
 
 	// run testsuite
@@ -33,7 +28,7 @@ int main(int argc, char* argv[]) {
 	if(argc == 1) {
 		repl();
 	} else if(argc == 2) {
-		runFile(argv[1]);
+		sourcefile_run(argv[1]);
 	} else {
 		fprintf(stderr, "Usage: clox [path]\n");
 		exit(64);
@@ -66,16 +61,3 @@ void repl() {
 	}
 
 }
-
-
-void runFile(const char* path) {
-
-	char* source = util_readFile(path);
-	InterpretResult result = interpret(source);
-	free(source);
-
-	if(result == INTERPRET_COMPILE_ERROR) exit(65);
-	if(result == INTERPRET_RUNTIME_ERROR) exit(70);
-
-}
-
